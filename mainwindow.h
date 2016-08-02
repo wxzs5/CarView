@@ -20,9 +20,19 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_clearButton_clicked();
+
+    void on_sendButton_clicked();
+
+    void on_openButton_clicked();
+
+    void Read_Data();
+
+    void on_btnFindPort_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QSerialPort *serial;
 };
 
 #endif // MAINWINDOW_H
