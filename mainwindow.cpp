@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mythread.h"
+//#include "mythread.h"
 
 
 
@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->webView->load(QUrl("file:///D:/Project/Qt/EchartDemo/html/linex.html"));
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);//禁止缩放
+    setFixedSize(this->width(), this->height());
 
     //查找可用串口
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
@@ -52,16 +53,19 @@ void MainWindow::on_sendButton_clicked()
 //读取接收到的数据
 void MainWindow::Read_Data()
 {
-    QByteArray buf;
-    buf = serial->readAll();
-    if((QByteArray)NULL !=buf)
+    if(Qt::Checked==ui->checkBoxView->checkState())
     {
-        QString str = ui->textEdit->toPlainText();
-        str+=tr(buf);
-        ui->textEdit->clear();
-        ui->textEdit->append(str);
+        QByteArray buf;
+        buf = serial->readAll();
+        if((QByteArray)NULL !=buf)
+        {
+            QString str = ui->textEdit->toPlainText();
+            str+=tr(buf);
+            ui->textEdit->clear();
+            ui->textEdit->append(str);
+        }
+        buf.clear();
     }
-    buf.clear();
 }
 
 
@@ -105,8 +109,19 @@ void MainWindow::on_openButton_clicked()
         ui->ParityBox->setEnabled(false);
         ui->StopBox->setEnabled(false);
         ui->openButton->setText(tr("关闭串口"));
+        ui->startCarButton->setText(tr("StartCar"));
+        ui->blueTooth->setText(tr("显示波形"));
         ui->sendButton->setEnabled(true);
         ui->btnFindPort->setEnabled(false);
+
+        ui->blueTooth->setEnabled(true);
+        ui->steerSendButton->setEnabled(true);
+        ui->steerGetButton->setEnabled(true);
+        ui->motorGetButton->setEnabled(true);
+        ui->motorSendButton->setEnabled(true);
+        ui->startCarButton->setEnabled(true);
+        ui->modelComboBox->setEnabled(true);
+
 
         //连接信号槽
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
@@ -125,8 +140,18 @@ void MainWindow::on_openButton_clicked()
         ui->ParityBox->setEnabled(true);
         ui->StopBox->setEnabled(true);
         ui->openButton->setText(tr("打开串口"));
+        ui->startCarButton->setText(tr("StartCar"));
+        ui->blueTooth->setText(tr("显示波形"));
         ui->sendButton->setEnabled(false);
         ui->btnFindPort->setEnabled(true);
+
+        ui->blueTooth->setEnabled(false);
+        ui->steerSendButton->setEnabled(false);
+        ui->steerGetButton->setEnabled(false);
+        ui->motorGetButton->setEnabled(false);
+        ui->motorSendButton->setEnabled(false);
+        ui->startCarButton->setEnabled(false);
+        ui->modelComboBox->setEnabled(false);
     }
 }
 
@@ -146,4 +171,28 @@ void MainWindow::on_btnFindPort_clicked()
         }
 }
 
+//开车
+void MainWindow::on_startCarButton_clicked()
+{
+    if(ui->startCarButton->text()==tr("StartCar"))
+    {
+        ui->startCarButton->setText(tr("StopCar"));
+    }
+    else
+    {
+        ui->startCarButton->setText(tr("StartCar"));
+    }
+}
 
+void MainWindow::on_blueTooth_clicked()
+{
+    if(ui->blueTooth->text()==tr("显示波形"))
+    {
+        ui->blueTooth->setText(tr("关闭波形"));
+        ui->webView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/line.html"));
+    }
+    else
+    {
+        ui->blueTooth->setText(tr("显示波形"));
+    }
+}

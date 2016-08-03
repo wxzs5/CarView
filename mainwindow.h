@@ -30,6 +30,12 @@ private slots:
 
     void on_btnFindPort_clicked();
 
+
+
+    void on_startCarButton_clicked();
+
+    void on_blueTooth_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
