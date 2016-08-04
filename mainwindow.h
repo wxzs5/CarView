@@ -36,6 +36,11 @@ private slots:
 
     void on_blueTooth_clicked();
 
+
+    void on_ccd1CheckBox_clicked();
+
+    void on_ccd2CheckBox_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;

@@ -122,6 +122,43 @@ void MainWindow::on_openButton_clicked()
         ui->startCarButton->setEnabled(true);
         ui->modelComboBox->setEnabled(true);
 
+        //CCD图像显示设置
+//        QLineSeries *series = new QLineSeries();
+
+        uchar arr[128]={0};
+        for(int ii=0;ii<128;ii++)
+        {
+            arr[ii]=ii*2;
+//            series->append(ii, arr[ii]);
+        }
+
+//        QChart *chart = new QChart();
+//        chart->legend()->hide();
+//        chart->addSeries(series);
+//        chart->createDefaultAxes();
+//        ui->ccd1ChartView->setRenderHint(QPainter::Antialiasing);
+
+
+        QImage ccd1Grap=QImage(arr,128,1,QImage::Format_Grayscale8);
+        QImage ccd2Grap=QImage(128,1,QImage::Format_Grayscale8);
+        ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-10,ui->ccd1GraphicsView->height()-10);
+
+        qDebug()<<ui->ccd1GraphicsView->height();
+        QGraphicsScene *scene = new QGraphicsScene;
+        scene->addPixmap(QPixmap::fromImage(ccd1Grap));
+        ui->ccd1GraphicsView->setScene(scene);
+        ui->ccd1GraphicsView->show();
+        ui->ccd2GraphicsView->setScene(scene);
+        ui->ccd2GraphicsView->show();
+
+        //判断显示CCD曲线信息
+//        if(Qt::Checked==ui->ccd1CheckBox->checkState())
+//        {
+
+//        }
+
+//        if(Qt::Checked==ui->ccd2CheckBox->checkState());
+
 
         //连接信号槽
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
@@ -194,5 +231,28 @@ void MainWindow::on_blueTooth_clicked()
     else
     {
         ui->blueTooth->setText(tr("显示波形"));
+        ui->webView->load(QUrl());
     }
+}
+
+
+//CCD波形显示选择
+void MainWindow::on_ccd1CheckBox_clicked()
+{
+//    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+//    {
+//        ui->ccd1View->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
+//    }
+//    else
+//        ui->ccd1View->load(QUrl());
+}
+
+void MainWindow::on_ccd2CheckBox_clicked()
+{
+//    if(Qt::Checked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+//    {
+//        ui->ccd2View->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
+//    }
+//    else
+//        ui->ccd2View->load(QUrl());
 }
