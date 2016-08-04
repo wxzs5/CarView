@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1668</width>
-    <height>922</height>
+    <height>965</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>10</y>
       <width>171</width>
-      <height>851</height>
+      <height>901</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -266,7 +266,7 @@
       <x>189</x>
       <y>9</y>
       <width>1471</width>
-      <height>581</height>
+      <height>571</height>
      </rect>
     </property>
    </widget>
@@ -274,9 +274,9 @@
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>570</y>
+      <y>580</y>
       <width>228</width>
-      <height>291</height>
+      <height>331</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -420,9 +420,9 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>570</y>
+      <y>580</y>
       <width>121</width>
-      <height>291</height>
+      <height>331</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -446,9 +446,9 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>620</y>
+      <y>600</y>
       <width>561</width>
-      <height>51</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
@@ -456,9 +456,9 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>760</y>
+      <y>770</y>
       <width>561</width>
-      <height>51</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
@@ -466,7 +466,7 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>600</y>
+      <y>580</y>
       <width>91</width>
       <height>19</height>
      </rect>
@@ -479,13 +479,33 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>740</y>
+      <y>750</y>
       <width>91</width>
       <height>19</height>
      </rect>
     </property>
     <property name="text">
      <string>ccd2</string>
+    </property>
+   </widget>
+   <widget class="QWebEngineView" name="ccd1ChartView" native="true">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>640</y>
+      <width>561</width>
+      <height>101</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QWebEngineView" name="ccd2ChartView" native="true">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>810</y>
+      <width>561</width>
+      <height>101</height>
+     </rect>
     </property>
    </widget>
   </widget>

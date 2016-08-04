@@ -8,7 +8,6 @@ int main(int argc, char *argv[])
     w.setWindowTitle("SCU PassCet6");
     w.show();
     return a.exec();
-
 }
 
 

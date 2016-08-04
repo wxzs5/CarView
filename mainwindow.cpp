@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include "mythread.h"
+#include "mythread.h"
 
 
 
@@ -123,7 +123,6 @@ void MainWindow::on_openButton_clicked()
         ui->modelComboBox->setEnabled(true);
 
         //CCD图像显示设置
-//        QLineSeries *series = new QLineSeries();
 
         uchar arr[128]={0};
         for(int ii=0;ii<128;ii++)
@@ -131,13 +130,6 @@ void MainWindow::on_openButton_clicked()
             arr[ii]=ii*2;
 //            series->append(ii, arr[ii]);
         }
-
-//        QChart *chart = new QChart();
-//        chart->legend()->hide();
-//        chart->addSeries(series);
-//        chart->createDefaultAxes();
-//        ui->ccd1ChartView->setRenderHint(QPainter::Antialiasing);
-
 
         QImage ccd1Grap=QImage(arr,128,1,QImage::Format_Grayscale8);
         QImage ccd2Grap=QImage(128,1,QImage::Format_Grayscale8);
@@ -239,20 +231,20 @@ void MainWindow::on_blueTooth_clicked()
 //CCD波形显示选择
 void MainWindow::on_ccd1CheckBox_clicked()
 {
-//    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
-//    {
-//        ui->ccd1View->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
-//    }
-//    else
-//        ui->ccd1View->load(QUrl());
+    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+    {
+        ui->ccd1ChartView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
+    }
+    else
+        ui->ccd1ChartView->load(QUrl());
 }
 
 void MainWindow::on_ccd2CheckBox_clicked()
 {
-//    if(Qt::Checked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
-//    {
-//        ui->ccd2View->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
-//    }
-//    else
-//        ui->ccd2View->load(QUrl());
+    if(Qt::Checked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+    {
+        ui->ccd2ChartView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
+    }
+    else
+        ui->ccd2ChartView->load(QUrl());
 }
