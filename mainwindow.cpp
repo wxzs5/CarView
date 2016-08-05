@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mythread.h"
+#include "handledata.h"
+
 
 
 
@@ -12,6 +13,41 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);//禁止缩放
     setFixedSize(this->width(), this->height());
+
+
+    //CCD图表信息设置
+    series1=new QLineSeries;
+    chart1=new QChart;
+    series2=new QLineSeries;
+    chart2=new QChart;
+    chart1->addSeries(series1);
+    chart2->addSeries(series2);
+    ccd1GrayYAxis.setRange(0,256);
+    ccd1GrayXAxis.setRange(0,128);
+    ccd2GrayYAxis.setRange(0,256);
+    ccd2GrayXAxis.setRange(0,128);
+    ui->ccd1GrayView->setChart(chart1);
+    ui->ccd2GrayView->setChart(chart2);
+
+    ui->ccd1GrayView->setRenderHint(QPainter::Antialiasing);
+    chart1->legend()->hide();
+    chart1->setAxisX(&ccd1GrayXAxis,series1);
+    chart1->setAxisY(&ccd1GrayYAxis,series1);
+    ui->ccd1GrayView->show();
+
+    ui->ccd2GrayView->setRenderHint(QPainter::Antialiasing);
+    chart2->legend()->hide();
+    chart2->setAxisX(&ccd2GrayXAxis,series2);
+    chart2->setAxisY(&ccd2GrayYAxis,series2);
+    ui->ccd2GrayView->show();
+
+    //网页相关
+//    QWebEnginePage *page = new QWebEnginePage(this);
+
+//    QWebChannel *channel = new QWebChannel(this);
+//    channel->registerObject("handledata", &(this->cardata));
+//    page->setWebChannel(channel);
+
 
     //查找可用串口
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
@@ -35,6 +71,88 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+//显示CCD信息
+void MainWindow::showGray(qint8 id)
+{
+    if(id==1)
+    {
+        series1->clear();
+        uchar arr[128]={0};
+        for(int ii=0;ii<128;ii++)
+            series1->append(ii, cardata.ccd1Gray[ii]);
+        series1->show();
+
+        ccd1Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
+        ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-5,ui->ccd1GraphicsView->height()-5);
+        QGraphicsScene *scene = new QGraphicsScene;
+        scene->addPixmap(QPixmap::fromImage(ccd1Grap));
+        ui->ccd1GraphicsView->setScene(scene);
+        ui->ccd1GraphicsView->show();
+    }
+    else
+    {
+        series2->clear();
+        uchar arr[128]={0};
+        for(int ii=0;ii<128;ii++)
+            series2->append(ii, arr[ii]);
+        series2->show();
+
+        ccd2Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
+        ccd2Grap=ccd1Grap.scaled(ui->ccd2GraphicsView->width()-5,ui->ccd2GraphicsView->height()-5);
+        QGraphicsScene *scene = new QGraphicsScene;
+        scene->addPixmap(QPixmap::fromImage(ccd2Grap));
+        ui->ccd2GraphicsView->setScene(scene);
+        ui->ccd2GraphicsView->show();
+    }
+}
+
+void MainWindow::readCCDGrap()
+{
+    char temp=0;
+    static quint8 state=0;
+//    serial->read(&temp,1);
+//    if(temp=='A'&&state==0)
+//    {
+//        state=1;
+//    }
+//    else if(temp=='B'&&state==1)
+//    {
+//        state=2;
+//    }
+//    else if(state==2)
+//    {
+//        state=0;
+//        serial->read((char *)(&cardata.ccd1Gray),128);
+//        series1->clear();
+//        for(int ii=0;ii<128;ii++)
+//            series1->append(ii, cardata.ccd1Gray[ii]);
+//        series1->show();
+
+//        ccd1Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
+//        ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-5,ui->ccd1GraphicsView->height()-5);
+//        QGraphicsScene *scene = new QGraphicsScene;
+//        scene->addPixmap(QPixmap::fromImage(ccd1Grap));
+//        ui->ccd1GraphicsView->setScene(scene);
+//        ui->ccd1GraphicsView->show();
+//    }
+//    else
+//        state=0;
+
+    serial->read((char *)(&cardata.ccd1Gray),128);
+    series1->clear();
+    for(int ii=0;ii<128;ii++)
+        series1->append(ii, cardata.ccd1Gray[ii]);
+    series1->show();
+
+    ccd1Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
+    ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-5,ui->ccd1GraphicsView->height()-5);
+    QGraphicsScene *scene = new QGraphicsScene;
+    scene->addPixmap(QPixmap::fromImage(ccd1Grap));
+    ui->ccd1GraphicsView->setScene(scene);
+    ui->ccd1GraphicsView->show();
+
 }
 
 
@@ -122,38 +240,17 @@ void MainWindow::on_openButton_clicked()
         ui->startCarButton->setEnabled(true);
         ui->modelComboBox->setEnabled(true);
 
-        //CCD图像显示设置
 
-        uchar arr[128]={0};
-        for(int ii=0;ii<128;ii++)
-        {
-            arr[ii]=ii*2;
-//            series->append(ii, arr[ii]);
-        }
-
-        QImage ccd1Grap=QImage(arr,128,1,QImage::Format_Grayscale8);
-        QImage ccd2Grap=QImage(128,1,QImage::Format_Grayscale8);
-        ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-10,ui->ccd1GraphicsView->height()-10);
-
-        qDebug()<<ui->ccd1GraphicsView->height();
-        QGraphicsScene *scene = new QGraphicsScene;
-        scene->addPixmap(QPixmap::fromImage(ccd1Grap));
-        ui->ccd1GraphicsView->setScene(scene);
-        ui->ccd1GraphicsView->show();
-        ui->ccd2GraphicsView->setScene(scene);
-        ui->ccd2GraphicsView->show();
 
         //判断显示CCD曲线信息
-//        if(Qt::Checked==ui->ccd1CheckBox->checkState())
-//        {
-
-//        }
-
-//        if(Qt::Checked==ui->ccd2CheckBox->checkState());
-
+        if(Qt::Checked==ui->ccd1CheckBox->checkState())
+            this->showGray(1);
+        if(Qt::Checked==ui->ccd2CheckBox->checkState())
+            this->showGray(2);
 
         //连接信号槽
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
+        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::readCCDGrap);
     }
     else
     {
@@ -213,6 +310,7 @@ void MainWindow::on_startCarButton_clicked()
     }
 }
 
+//波形开关
 void MainWindow::on_blueTooth_clicked()
 {
     if(ui->blueTooth->text()==tr("显示波形"))
@@ -232,19 +330,19 @@ void MainWindow::on_blueTooth_clicked()
 void MainWindow::on_ccd1CheckBox_clicked()
 {
     if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+        this->showGray(1);
+    else if(Qt::Unchecked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
-        ui->ccd1ChartView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
+        series1->hide();
     }
-    else
-        ui->ccd1ChartView->load(QUrl());
 }
 
 void MainWindow::on_ccd2CheckBox_clicked()
 {
     if(Qt::Checked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+        this->showGray(2);
+    else if(Qt::Unchecked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
-        ui->ccd2ChartView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/linex.html"));
+        series2->hide();
     }
-    else
-        ui->ccd2ChartView->load(QUrl());
 }
