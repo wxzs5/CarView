@@ -3,9 +3,6 @@
 
 #include <QMainWindow>
 #include <QDebug>
-#include <QtCharts/QValueAxis>
-#include <QtCharts/QChartView>
-#include <QtCharts/QLineSeries>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include<QtWebEngineWidgets/QWebEngineView>
@@ -13,7 +10,6 @@
 #include<QtWebChannel>
 #include"handledata.h"
 
-QT_CHARTS_USE_NAMESPACE
 
 namespace Ui {
 class MainWindow;
@@ -27,7 +23,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void showGray(qint8 id);
     void readCCDGrap();
 
 private slots:
@@ -41,12 +36,9 @@ private slots:
 
     void on_btnFindPort_clicked();
 
-
-
     void on_startCarButton_clicked();
 
     void on_blueTooth_clicked();
-
 
     void on_ccd1CheckBox_clicked();
 
@@ -55,17 +47,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
-    HandleData cardata;
-    QLineSeries *series1;
-    QLineSeries *series2;
-    QChart *chart1;
-    QChart *chart2;
-    QImage ccd1Grap=QImage(128,1,QImage::Format_Grayscale8);
-    QImage ccd2Grap=QImage(128,1,QImage::Format_Grayscale8);
-    QValueAxis ccd1GrayYAxis;
-    QValueAxis ccd1GrayXAxis;
-    QValueAxis ccd2GrayYAxis;
-    QValueAxis ccd2GrayXAxis;
+    HandleData ccd1Data;
+    HandleData ccd2Data;
 };
 
 #endif // MAINWINDOW_H

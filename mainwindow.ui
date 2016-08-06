@@ -459,9 +459,9 @@
    <widget class="QGraphicsView" name="ccd1GraphicsView">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>600</x>
       <y>600</y>
-      <width>531</width>
+      <width>491</width>
       <height>31</height>
      </rect>
     </property>
@@ -475,9 +475,9 @@
    <widget class="QGraphicsView" name="ccd2GraphicsView">
     <property name="geometry">
      <rect>
-      <x>1130</x>
+      <x>1160</x>
       <y>600</y>
-      <width>531</width>
+      <width>491</width>
       <height>31</height>
      </rect>
     </property>
@@ -491,7 +491,7 @@
    <widget class="QCheckBox" name="ccd1CheckBox">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>600</x>
       <y>580</y>
       <width>91</width>
       <height>19</height>
@@ -504,7 +504,7 @@
    <widget class="QCheckBox" name="ccd2CheckBox">
     <property name="geometry">
      <rect>
-      <x>1130</x>
+      <x>1160</x>
       <y>580</y>
       <width>91</width>
       <height>19</height>

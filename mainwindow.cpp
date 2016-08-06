@@ -4,8 +4,6 @@
 
 
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -14,32 +12,21 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);//禁止缩放
     setFixedSize(this->width(), this->height());
 
-
-    //CCD图表信息设置
-    series1=new QLineSeries;
-    chart1=new QChart;
-    series2=new QLineSeries;
-    chart2=new QChart;
-    chart1->addSeries(series1);
-    chart2->addSeries(series2);
-    ccd1GrayYAxis.setRange(0,256);
-    ccd1GrayXAxis.setRange(0,128);
-    ccd2GrayYAxis.setRange(0,256);
-    ccd2GrayXAxis.setRange(0,128);
-    ui->ccd1GrayView->setChart(chart1);
-    ui->ccd2GrayView->setChart(chart2);
-
+    //CCD图像初始话
+    ui->ccd1GrayView->setChart(ccd1Data.chart);
     ui->ccd1GrayView->setRenderHint(QPainter::Antialiasing);
-    chart1->legend()->hide();
-    chart1->setAxisX(&ccd1GrayXAxis,series1);
-    chart1->setAxisY(&ccd1GrayYAxis,series1);
     ui->ccd1GrayView->show();
 
+    ui->ccd1GraphicsView->setScene(ccd1Data.scene);
+    ui->ccd1GraphicsView->show();
+
+    ui->ccd2GrayView->setChart(ccd2Data.chart);
     ui->ccd2GrayView->setRenderHint(QPainter::Antialiasing);
-    chart2->legend()->hide();
-    chart2->setAxisX(&ccd2GrayXAxis,series2);
-    chart2->setAxisY(&ccd2GrayYAxis,series2);
     ui->ccd2GrayView->show();
+
+    ui->ccd2GraphicsView->setScene(ccd2Data.scene);
+    ui->ccd2GraphicsView->show();
+
 
     //网页相关
 //    QWebEnginePage *page = new QWebEnginePage(this);
@@ -73,40 +60,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//显示CCD信息
-void MainWindow::showGray(qint8 id)
-{
-    if(id==1)
-    {
-        series1->clear();
-        uchar arr[128]={0};
-        for(int ii=0;ii<128;ii++)
-            series1->append(ii, cardata.ccd1Gray[ii]);
-        series1->show();
-
-        ccd1Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
-        ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-5,ui->ccd1GraphicsView->height()-5);
-        QGraphicsScene *scene = new QGraphicsScene;
-        scene->addPixmap(QPixmap::fromImage(ccd1Grap));
-        ui->ccd1GraphicsView->setScene(scene);
-        ui->ccd1GraphicsView->show();
-    }
-    else
-    {
-        series2->clear();
-        uchar arr[128]={0};
-        for(int ii=0;ii<128;ii++)
-            series2->append(ii, arr[ii]);
-        series2->show();
-
-        ccd2Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
-        ccd2Grap=ccd1Grap.scaled(ui->ccd2GraphicsView->width()-5,ui->ccd2GraphicsView->height()-5);
-        QGraphicsScene *scene = new QGraphicsScene;
-        scene->addPixmap(QPixmap::fromImage(ccd2Grap));
-        ui->ccd2GraphicsView->setScene(scene);
-        ui->ccd2GraphicsView->show();
-    }
-}
 
 void MainWindow::readCCDGrap()
 {
@@ -124,35 +77,15 @@ void MainWindow::readCCDGrap()
 //    else if(state==2)
 //    {
 //        state=0;
-//        serial->read((char *)(&cardata.ccd1Gray),128);
-//        series1->clear();
-//        for(int ii=0;ii<128;ii++)
-//            series1->append(ii, cardata.ccd1Gray[ii]);
-//        series1->show();
-
-//        ccd1Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
-//        ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-5,ui->ccd1GraphicsView->height()-5);
-//        QGraphicsScene *scene = new QGraphicsScene;
-//        scene->addPixmap(QPixmap::fromImage(ccd1Grap));
-//        ui->ccd1GraphicsView->setScene(scene);
-//        ui->ccd1GraphicsView->show();
 //    }
 //    else
 //        state=0;
 
-    serial->read((char *)(&cardata.ccd1Gray),128);
-    series1->clear();
-    for(int ii=0;ii<128;ii++)
-        series1->append(ii, cardata.ccd1Gray[ii]);
-    series1->show();
-
-    ccd1Grap=QImage(cardata.ccd1Gray,128,1,QImage::Format_Grayscale8);
-    ccd1Grap=ccd1Grap.scaled(ui->ccd1GraphicsView->width()-5,ui->ccd1GraphicsView->height()-5);
-    QGraphicsScene *scene = new QGraphicsScene;
-    scene->addPixmap(QPixmap::fromImage(ccd1Grap));
-    ui->ccd1GraphicsView->setScene(scene);
-    ui->ccd1GraphicsView->show();
-
+    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+    {
+        serial->read((char *)(&ccd1Data.ccdGray),128);
+        ccd1Data.showGray();
+    }
 }
 
 
@@ -244,10 +177,9 @@ void MainWindow::on_openButton_clicked()
 
         //判断显示CCD曲线信息
         if(Qt::Checked==ui->ccd1CheckBox->checkState())
-            this->showGray(1);
+            ccd1Data.showGray();
         if(Qt::Checked==ui->ccd2CheckBox->checkState())
-            this->showGray(2);
-
+            ccd2Data.showGray();
         //连接信号槽
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::readCCDGrap);
@@ -330,19 +262,21 @@ void MainWindow::on_blueTooth_clicked()
 void MainWindow::on_ccd1CheckBox_clicked()
 {
     if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
-        this->showGray(1);
+        ccd1Data.showGray();
     else if(Qt::Unchecked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
-        series1->hide();
+        ccd1Data.series->hide();
+        ccd1Data.scene->clear();
     }
 }
 
 void MainWindow::on_ccd2CheckBox_clicked()
 {
     if(Qt::Checked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
-        this->showGray(2);
+        ccd2Data.showGray();
     else if(Qt::Unchecked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
-        series2->hide();
+        ccd2Data.series->hide();
+        ccd2Data.scene->clear();
     }
 }

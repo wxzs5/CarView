@@ -2,8 +2,11 @@
 #define HANDLEDATA_H
 
 #include <QObject>
-#include <QQueue>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
+QT_CHARTS_USE_NAMESPACE
 class HandleData : public QObject
 {
     Q_OBJECT
@@ -16,17 +19,20 @@ signals:
     void sendCCDGray(uchar ccd);
 
 public:
-    uchar ccd1Gray[128];
-    uchar ccd2Gray[128];
-    uchar ccd1Binary[128];
-    uchar ccd2Binary[128];
-
+    void showGray();
 
 public slots:
 //  void receiveccdifo(uchar ccd);
 
-private:
-
+public:
+    uchar ccdGray[128];
+    uchar ccdBinary[128];
+    QLineSeries *series;
+    QChart *chart;
+    QImage ccdGrap=QImage(128,1,QImage::Format_Grayscale8);
+    QValueAxis grayYAxis;
+    QValueAxis grayXAxis;
+    QGraphicsScene *scene;
 };
 
 #endif // HANDLEDATA_H
