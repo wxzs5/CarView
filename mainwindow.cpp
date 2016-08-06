@@ -51,25 +51,40 @@ MainWindow::~MainWindow()
 
 void MainWindow::readCCDGrap()
 {
-    if(Qt::Checked==ui->ccd1CheckBox->checkState())
+    if(Qt::Checked==ui->ccd1CheckBox->checkState()||Qt::Checked==ui->ccd2CheckBox->checkState())
     {
-        char serialtemp=0;
-        static quint8 state=0;
-        serial->read(&serialtemp,1);
-        if(serialtemp=='*'&&state==0)
+    char serialtemp=0;
+    static quint8 state=0;
+    serial->read(&serialtemp,1);
+    if(serialtemp=='*'&&state==0)
+    {
+        state=1;
+        qDebug()<<"state 1";
+    }
+    if(serialtemp=='z'&&state==1)
+    {
+        state=0;
+        if(Qt::Checked==ui->ccd2CheckBox->checkState())
         {
-            state=1;
-            qDebug()<<"state 1";
+            serial->read((char *)ccd2Data.ccdGray,128);
+            ccdData.showGray();
+            qDebug()<<"ccd1 successed";
         }
-        else if(serialtemp=='z'&&state==1)
-        {
-            state=0;
-            serial->read((char *)ccd1Data.ccdGray,128);
-            ccd1Data.showGray();
-            qDebug()<<"serialport successed";
-        }
-        else
-            state=0;
+        qDebug()<<"ccd1";
+    }
+//    else if(serialtemp=='y'&&state==1)
+//    {
+//        state=0;
+//        if(Qt::Checked==ui->ccd2CheckBox->checkState())
+//        {
+//            serial->read((char *)ccd2Data.ccdGray,128);
+//            ccd2Data.showGray();
+//            qDebug()<<"ccd2 successed";
+//        }
+//        qDebug()<<"ccd2";
+//    }
+//    else
+//        state=0;
     }
 }
 
@@ -168,13 +183,13 @@ void MainWindow::on_openButton_clicked()
         if(Qt::Checked==ui->ccd2CheckBox->checkState())
             ccd2Data.showGray();
         //连接信号槽
-        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
+//        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::readCCDGrap);
     }
     else
     {
         //关闭串口
-        serial->clear();
+//        serial->clear();
         serial->close();
         serial->deleteLater();
 
@@ -268,4 +283,10 @@ void MainWindow::on_ccd2CheckBox_clicked()
         ccd2Data.series->hide();
         ccd2Data.scene->clear();
     }
+}
+
+void MainWindow::on_variableButton_clicked()
+{
+    if(ui->openButton->text()==tr("关闭串口"))
+        serial->clear();
 }

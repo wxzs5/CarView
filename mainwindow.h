@@ -44,9 +44,10 @@ private slots:
 
     void on_ccd2CheckBox_clicked();
 
+    void on_variableButton_clicked();
+
 private:
     Ui::MainWindow *ui;
-//    QSerialPort *serial;
     HandleData ccd1Data;
     HandleData ccd2Data;
 };
