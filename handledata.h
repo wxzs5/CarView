@@ -32,8 +32,8 @@ public slots:
 //  void receiveccdifo(uchar ccd);
 
 public:
-    uchar ccdGray[128]={0};
-    uchar ccdBinary[128]={0};
+    uchar *ccdGray;
+    uchar *ccdBinary;
     QLineSeries *series;
     QChart *chart;
     QImage ccdGrap=QImage(128,1,QImage::Format_Grayscale8);

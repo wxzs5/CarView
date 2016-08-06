@@ -55,10 +55,7 @@ void MainWindow::readCCDGrap()
     {
         char serialtemp=0;
         static quint8 state=0;
-//        if(state!=3)
-            serial->read(&serialtemp,1);
-        qDebug()<<"serialdata:"<<(quint8)serialtemp;
-        qDebug()<<"serialdata char:"<<serialtemp;
+        serial->read(&serialtemp,1);
         if(serialtemp=='*'&&state==0)
         {
             state=1;
@@ -67,7 +64,7 @@ void MainWindow::readCCDGrap()
         else if(serialtemp=='z'&&state==1)
         {
             state=0;
-            serial->read((char *)(ccd1Data.ccdGray),128);
+            serial->read((char *)ccd1Data.ccdGray,128);
             ccd1Data.showGray();
             qDebug()<<"serialport successed";
         }
@@ -141,7 +138,7 @@ void MainWindow::on_openButton_clicked()
         //设置流控制
         serial->setFlowControl(QSerialPort::NoFlowControl);
         //设置串口缓冲区大小
-        serial->setReadBufferSize(2000);
+        serial->setReadBufferSize(700);
 
 
         //关闭设置菜单使能
@@ -171,7 +168,7 @@ void MainWindow::on_openButton_clicked()
         if(Qt::Checked==ui->ccd2CheckBox->checkState())
             ccd2Data.showGray();
         //连接信号槽
-//        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
+        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::readCCDGrap);
     }
     else

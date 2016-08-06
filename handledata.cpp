@@ -23,13 +23,14 @@ HandleData::HandleData(QObject *parent) : QObject(parent)
     chart->setAxisY(&grayYAxis, series);
     chart->setToolTip("灰度");
 
-    ccdGrap = QImage(this->ccdGray, 128, 1, QImage::Format_Grayscale8);
+    ccdGrap =QImage(ccdGray,128, 1, QImage::Format_Grayscale8);
+    ccdGrap = ccdGrap.scaled(486, 26);
     scene = new QGraphicsScene;
     scene->addPixmap(QPixmap::fromImage(ccdGrap));
 
 }
 
-//显示CCD信息
+//显示CCD灰度图
 void HandleData::showGray()
 {
     series->clear();
@@ -38,10 +39,9 @@ void HandleData::showGray()
         series->append(ii, ccdGray[ii]);
     series->show();
     scene->clear();
-    ccdGrap = QImage(ccdGray, 128, 1, QImage::Format_Grayscale8);
+    ccdGrap =QImage((uchar *)ccdGray,128, 1, QImage::Format_Grayscale8);
     ccdGrap = ccdGrap.scaled(486, 26);
     scene->addPixmap(QPixmap::fromImage(ccdGrap));
-    qDebug()<<"show scene";
 }
 
 void HandleData::serialDataHandle()
