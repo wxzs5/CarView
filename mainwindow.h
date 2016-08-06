@@ -46,7 +46,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSerialPort *serial;
+//    QSerialPort *serial;
     HandleData ccd1Data;
     HandleData ccd2Data;
 };

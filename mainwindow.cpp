@@ -16,14 +16,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->ccd1GrayView->setChart(ccd1Data.chart);
     ui->ccd1GrayView->setRenderHint(QPainter::Antialiasing);
     ui->ccd1GrayView->show();
-
     ui->ccd1GraphicsView->setScene(ccd1Data.scene);
     ui->ccd1GraphicsView->show();
 
     ui->ccd2GrayView->setChart(ccd2Data.chart);
     ui->ccd2GrayView->setRenderHint(QPainter::Antialiasing);
     ui->ccd2GrayView->show();
-
     ui->ccd2GraphicsView->setScene(ccd2Data.scene);
     ui->ccd2GraphicsView->show();
 
@@ -37,20 +35,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //查找可用串口
-    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
-    {
-        QSerialPort serial;
-        serial.setPort(info);
-        if (serial.open(QIODevice::ReadWrite))
-        {
-            ui->PortBox->addItem(serial.portName());
-            serial.close();
-        }
-    }
-
-    //Set Default BaudRate
+    this->on_btnFindPort_clicked();
+    //默认波特率
     ui->BaudBox->setCurrentIndex(6);
-    //Close SendButton Enable
+    //关闭发送按钮
     ui->sendButton->setEnabled(false);
     qDebug() << tr("UI Setted Successful!");
 }
@@ -63,28 +51,32 @@ MainWindow::~MainWindow()
 
 void MainWindow::readCCDGrap()
 {
-    char temp=0;
-    static quint8 state=0;
-//    serial->read(&temp,1);
-//    if(temp=='A'&&state==0)
-//    {
-//        state=1;
-//    }
-//    else if(temp=='B'&&state==1)
-//    {
-//        state=2;
-//    }
-//    else if(state==2)
-//    {
-//        state=0;
-//    }
-//    else
-//        state=0;
-
     if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
-        serial->read((char *)(&ccd1Data.ccdGray),128);
-        ccd1Data.showGray();
+        char serialtemp=0;
+        static quint8 state=0;
+//        if(state!=3)
+            serial->read(&serialtemp,1);
+
+        if(serialtemp=='*'&&state==0)
+        {
+            state=1;
+            qDebug()<<"state 1";
+        }
+        else if(serialtemp=='L'&&state==1)
+        {
+            state=2;
+            qDebug()<<"state 2";
+        }
+        else if(serialtemp=='D'&&state==2)
+        {
+            state=0;
+            serial->read((char *)(ccd1Data.ccdGray),128);
+            ccd1Data.showGray();
+            qDebug()<<"serialport successed";
+        }
+        else
+            state=0;
     }
 }
 
@@ -152,6 +144,9 @@ void MainWindow::on_openButton_clicked()
         }
         //设置流控制
         serial->setFlowControl(QSerialPort::NoFlowControl);
+        //设置串口缓冲区大小
+        serial->setReadBufferSize(800);
+
 
         //关闭设置菜单使能
         ui->PortBox->setEnabled(false);
@@ -174,14 +169,13 @@ void MainWindow::on_openButton_clicked()
         ui->modelComboBox->setEnabled(true);
 
 
-
         //判断显示CCD曲线信息
         if(Qt::Checked==ui->ccd1CheckBox->checkState())
             ccd1Data.showGray();
         if(Qt::Checked==ui->ccd2CheckBox->checkState())
             ccd2Data.showGray();
         //连接信号槽
-        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
+//        QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::Read_Data);
         QObject::connect(serial, &QSerialPort::readyRead, this, &MainWindow::readCCDGrap);
     }
     else
