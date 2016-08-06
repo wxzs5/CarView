@@ -64,27 +64,25 @@ void MainWindow::readCCDGrap()
     if(serialtemp=='z'&&state==1)
     {
         state=0;
-        if(Qt::Checked==ui->ccd2CheckBox->checkState())
+        if(Qt::Checked==ui->ccd1CheckBox->checkState())
         {
-            serial->read((char *)ccd2Data.ccdGray,128);
-            ccdData.showGray();
+            serial->read((char *)(&ccd1Data.ccdGray),128);
+            ccd1Data.showGray();
             qDebug()<<"ccd1 successed";
         }
         qDebug()<<"ccd1";
     }
-//    else if(serialtemp=='y'&&state==1)
-//    {
-//        state=0;
-//        if(Qt::Checked==ui->ccd2CheckBox->checkState())
-//        {
-//            serial->read((char *)ccd2Data.ccdGray,128);
-//            ccd2Data.showGray();
-//            qDebug()<<"ccd2 successed";
-//        }
-//        qDebug()<<"ccd2";
-//    }
-//    else
-//        state=0;
+    else if(serialtemp=='y'&&state==1)
+    {
+        state=0;
+        if(Qt::Checked==ui->ccd2CheckBox->checkState())
+        {
+            serial->read((char *)ccd2Data.ccdGray,128);
+            ccd2Data.showGray();
+            qDebug()<<"ccd2 successed";
+        }
+        qDebug()<<"ccd2";
+    }
     }
 }
 
@@ -153,7 +151,7 @@ void MainWindow::on_openButton_clicked()
         //设置流控制
         serial->setFlowControl(QSerialPort::NoFlowControl);
         //设置串口缓冲区大小
-        serial->setReadBufferSize(700);
+        serial->setReadBufferSize(500);
 
 
         //关闭设置菜单使能
