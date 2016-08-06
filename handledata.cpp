@@ -41,6 +41,7 @@ void HandleData::showGray()
     ccdGrap = QImage(ccdGray, 128, 1, QImage::Format_Grayscale8);
     ccdGrap = ccdGrap.scaled(486, 26);
     scene->addPixmap(QPixmap::fromImage(ccdGrap));
+    qDebug()<<"show scene";
 }
 
 void HandleData::serialDataHandle()

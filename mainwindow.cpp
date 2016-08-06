@@ -51,24 +51,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::readCCDGrap()
 {
-    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+    if(Qt::Checked==ui->ccd1CheckBox->checkState())
     {
         char serialtemp=0;
         static quint8 state=0;
 //        if(state!=3)
             serial->read(&serialtemp,1);
-
+        qDebug()<<"serialdata:"<<(quint8)serialtemp;
+        qDebug()<<"serialdata char:"<<serialtemp;
         if(serialtemp=='*'&&state==0)
         {
             state=1;
             qDebug()<<"state 1";
         }
-        else if(serialtemp=='L'&&state==1)
-        {
-            state=2;
-            qDebug()<<"state 2";
-        }
-        else if(serialtemp=='D'&&state==2)
+        else if(serialtemp=='z'&&state==1)
         {
             state=0;
             serial->read((char *)(ccd1Data.ccdGray),128);
@@ -145,7 +141,7 @@ void MainWindow::on_openButton_clicked()
         //设置流控制
         serial->setFlowControl(QSerialPort::NoFlowControl);
         //设置串口缓冲区大小
-        serial->setReadBufferSize(800);
+        serial->setReadBufferSize(2000);
 
 
         //关闭设置菜单使能
@@ -256,7 +252,9 @@ void MainWindow::on_blueTooth_clicked()
 void MainWindow::on_ccd1CheckBox_clicked()
 {
     if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
+    {
         ccd1Data.showGray();
+    }
     else if(Qt::Unchecked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
         ccd1Data.series->hide();
