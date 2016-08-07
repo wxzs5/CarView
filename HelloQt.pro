@@ -16,7 +16,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    handledata.cpp
+    handledata.cpp \
+    serialport.cpp
 
 HEADERS  += mainwindow.h \
     handledata.h
