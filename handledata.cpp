@@ -37,20 +37,11 @@ void HandleData::showGray()
     for (int ii = 0; ii < 128; ii++)
         series->append(ii, ccdGray[ii]);
     series->show();
-    // scene->clear();
+    scene->clear();
     ccdGrap = QImage(ccdGray, 128, 1, QImage::Format_Grayscale8);
     ccdGrap = ccdGrap.scaled(486, 26);
     scene->addPixmap(QPixmap::fromImage(ccdGrap));
 }
 
-//void HandleData::serialDataHandle()
-//{
 
-//}
-
-
-//void HandleData::loadGrayData(uchar *ccd, qint8 id)
-//{
-
-//}
 

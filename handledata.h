@@ -19,14 +19,11 @@ class HandleData : public QObject
 public:
     explicit HandleData(QObject *parent = 0);
 
-//    void LoadGrayData(uchar *ccd, qint8 id);
-
 signals:
     void sendCCDGray(uchar ccd);
 
 public:
     void showGray();
-    void serialDataHandle();
 
 public slots:
 //  void receiveccdifo(uchar ccd);

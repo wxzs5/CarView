@@ -51,40 +51,99 @@ MainWindow::~MainWindow()
 
 void MainWindow::readCCDGrap()
 {
-    if(Qt::Checked==ui->ccd1CheckBox->checkState()||Qt::Checked==ui->ccd2CheckBox->checkState())
+    int ii=0,cnt=0;
+    qint64 len=0,read_len=0;
+    static QByteArray serialData,restData;
+    QByteArray serialTempData=serial->readAll();
+    if(!restData.isEmpty())
     {
-    char serialtemp=0;
-    static quint8 state=0;
-    serial->read(&serialtemp,1);
-    if(serialtemp=='*'&&state==0)
-    {
-        state=1;
-        qDebug()<<"state 1";
+        serialData.append(restData);
+        restData.clear();
     }
-    if(serialtemp=='z'&&state==1)
+    serialData.append(serialTempData);
+    serialTempData.clear();
+    if(serialData.size()>260)
     {
-        state=0;
-        if(Qt::Checked==ui->ccd1CheckBox->checkState())
+        len=serialData.size();
+        qDebug() << "serial data read length:"<<len;
+        while(ii<len)
         {
-            serial->read((char *)(&ccd1Data.ccdGray),128);
-            ccd1Data.showGray();
-            qDebug()<<"ccd1 successed";
+            if(ii<len-131)
+            {
+                if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='z')    //CCD1灰度图
+                {
+                    ii=ii+2;
+                    read_len=128;
+                    cnt=0;
+                    while(read_len>0)
+                    {
+                        ccd1Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
+                        read_len--;
+                    }
+                    if(Qt::Checked==ui->ccd1CheckBox->checkState())
+                        ccd1Data.showGray();
+                }
+                else if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='y')//CCD2灰度图
+                {
+                    ii=ii+2;
+                    read_len=128;
+                    cnt=0;
+                    while(read_len>0)
+                    {
+                        ccd2Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
+                        read_len--;
+                    }
+                    if(Qt::Checked==ui->ccd2CheckBox->checkState())
+                        ccd2Data.showGray();
+                }
+                else
+                {
+                    ii++;
+                }
+            }
+            else
+            {
+                restData=serialData.mid(ii,len);
+                break;
+            }
+
         }
-        qDebug()<<"ccd1";
-    }
-    else if(serialtemp=='y'&&state==1)
-    {
-        state=0;
-        if(Qt::Checked==ui->ccd2CheckBox->checkState())
-        {
-            serial->read((char *)ccd2Data.ccdGray,128);
-            ccd2Data.showGray();
-            qDebug()<<"ccd2 successed";
-        }
-        qDebug()<<"ccd2";
-    }
+        serialData.clear();
     }
 }
+//    if(Qt::Checked==ui->ccd1CheckBox->checkState()||Qt::Checked==ui->ccd2CheckBox->checkState())
+//    {
+//    char serialtemp=0;
+//    static quint8 state=0;
+//    serial->read(&serialtemp,1);
+//    if(serialtemp=='*'&&state==0)
+//    {
+//        state=1;
+//        qDebug()<<"state 1";
+//    }
+//    if(serialtemp=='z'&&state==1)
+//    {
+//        state=0;
+//        if(Qt::Checked==ui->ccd1CheckBox->checkState())
+//        {
+//            serial->read((char *)(&ccd1Data.ccdGray),128);
+//            ccd1Data.showGray();
+//            qDebug()<<"ccd1 successed";
+//        }
+//        qDebug()<<"ccd1";
+//    }
+//    else if(serialtemp=='y'&&state==1)
+//    {
+//        state=0;
+//        if(Qt::Checked==ui->ccd2CheckBox->checkState())
+//        {
+//            serial->read((char *)ccd2Data.ccdGray,128);
+//            ccd2Data.showGray();
+//            qDebug()<<"ccd2 successed";
+//        }
+//        qDebug()<<"ccd2";
+//    }
+//    }
 
 
 //清空接受窗口
@@ -117,7 +176,7 @@ void MainWindow::Read_Data()
     }
 }
 
-
+//打开/关闭串口
 void MainWindow::on_openButton_clicked()
 {
     if(ui->openButton->text()==tr("打开串口"))
@@ -151,7 +210,7 @@ void MainWindow::on_openButton_clicked()
         //设置流控制
         serial->setFlowControl(QSerialPort::NoFlowControl);
         //设置串口缓冲区大小
-        serial->setReadBufferSize(500);
+//        serial->setReadBufferSize(500);
 
 
         //关闭设置菜单使能
@@ -187,7 +246,7 @@ void MainWindow::on_openButton_clicked()
     else
     {
         //关闭串口
-//        serial->clear();
+        serial->clear();
         serial->close();
         serial->deleteLater();
 
