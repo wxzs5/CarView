@@ -65,7 +65,8 @@ void MainWindow::readCCDGrap()
     if(serialData.size()>260)
     {
         len=serialData.size();
-        qDebug() << "serial data read length:"<<len;
+//        qDebug() << "serial data read length:"<<len;
+        ui->statusBar->showMessage(tr("Received SerialPort Data"),200);
         while(ii<len)
         {
             if(ii<len-131)
@@ -111,40 +112,6 @@ void MainWindow::readCCDGrap()
         serialData.clear();
     }
 }
-//    if(Qt::Checked==ui->ccd1CheckBox->checkState()||Qt::Checked==ui->ccd2CheckBox->checkState())
-//    {
-//    char serialtemp=0;
-//    static quint8 state=0;
-//    serial->read(&serialtemp,1);
-//    if(serialtemp=='*'&&state==0)
-//    {
-//        state=1;
-//        qDebug()<<"state 1";
-//    }
-//    if(serialtemp=='z'&&state==1)
-//    {
-//        state=0;
-//        if(Qt::Checked==ui->ccd1CheckBox->checkState())
-//        {
-//            serial->read((char *)(&ccd1Data.ccdGray),128);
-//            ccd1Data.showGray();
-//            qDebug()<<"ccd1 successed";
-//        }
-//        qDebug()<<"ccd1";
-//    }
-//    else if(serialtemp=='y'&&state==1)
-//    {
-//        state=0;
-//        if(Qt::Checked==ui->ccd2CheckBox->checkState())
-//        {
-//            serial->read((char *)ccd2Data.ccdGray,128);
-//            ccd2Data.showGray();
-//            qDebug()<<"ccd2 successed";
-//        }
-//        qDebug()<<"ccd2";
-//    }
-//    }
-
 
 //清空接受窗口
 void MainWindow::on_clearButton_clicked()

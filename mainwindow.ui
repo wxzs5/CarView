@@ -14,12 +14,15 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>171</width>
+      <width>173</width>
       <height>901</height>
      </rect>
     </property>
@@ -279,7 +282,7 @@
      <rect>
       <x>189</x>
       <y>9</y>
-      <width>1471</width>
+      <width>1491</width>
       <height>571</height>
      </rect>
     </property>
@@ -289,7 +292,7 @@
      <rect>
       <x>190</x>
       <y>580</y>
-      <width>228</width>
+      <width>258</width>
       <height>331</height>
      </rect>
     </property>
@@ -322,13 +325,34 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
-        <widget class="QDoubleSpinBox" name="steerPSpinBox"/>
+        <widget class="QDoubleSpinBox" name="steerPSpinBox">
+         <property name="minimum">
+          <double>0.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>10.000000000000000</double>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="steerDSpinBox"/>
+        <widget class="QDoubleSpinBox" name="steerDSpinBox">
+         <property name="minimum">
+          <double>0.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="diffSpinBox"/>
+        <widget class="QDoubleSpinBox" name="diffSpinBox">
+         <property name="minimum">
+          <double>-5.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>5.000000000000000</double>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -384,13 +408,25 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
        <item>
-        <widget class="QDoubleSpinBox" name="motorPSpinBox"/>
+        <widget class="QDoubleSpinBox" name="motorPSpinBox">
+         <property name="maximum">
+          <double>50.000000000000000</double>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="motorISpinBox"/>
+        <widget class="QDoubleSpinBox" name="motorISpinBox">
+         <property name="maximum">
+          <double>50.000000000000000</double>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="speedSpinBox"/>
+        <widget class="QSpinBox" name="speedSpinBox">
+         <property name="maximum">
+          <number>500</number>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -433,9 +469,9 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>460</x>
       <y>580</y>
-      <width>121</width>
+      <width>91</width>
       <height>331</height>
      </rect>
     </property>
@@ -541,7 +577,7 @@
      <x>0</x>
      <y>0</y>
      <width>1684</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
