@@ -109,11 +109,11 @@ void MainWindow::on_blueTooth_clicked()
 //CCD波形显示选择
 void MainWindow::on_ccd1CheckBox_clicked()
 {
-    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&serial->isOpen())
+    if(Qt::Checked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
         ccd1Data.showGray();
     }
-    else if(Qt::Unchecked==ui->ccd1CheckBox->checkState()&&serial->isOpen())
+    else if(Qt::Unchecked==ui->ccd1CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
         ccd1Data.series->hide();
         ccd1Data.scene->clear();
@@ -122,9 +122,9 @@ void MainWindow::on_ccd1CheckBox_clicked()
 
 void MainWindow::on_ccd2CheckBox_clicked()
 {
-    if(Qt::Checked==ui->ccd2CheckBox->checkState()&&serial->isOpen())
+    if(Qt::Checked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
         ccd2Data.showGray();
-    else if(Qt::Unchecked==ui->ccd2CheckBox->checkState()&&serial->isOpen())
+    else if(Qt::Unchecked==ui->ccd2CheckBox->checkState()&&ui->openButton->text()==tr("关闭串口"))
     {
         ccd2Data.series->hide();
         ccd2Data.scene->clear();
