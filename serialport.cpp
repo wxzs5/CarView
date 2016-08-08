@@ -11,6 +11,7 @@ void MainWindow::readCCDGrap()
     qint64 len=0,read_len=0;
     static QByteArray serialData,restData;
     QByteArray serialTempData=serial->readAll();
+    showLine(Road,ccd1Data.ccdGray[40]);
     if(!restData.isEmpty())
     {
         serialData.append(restData);
@@ -69,6 +70,8 @@ void MainWindow::readCCDGrap()
         serialData.clear();
     }
 }
+
+
 
 
 

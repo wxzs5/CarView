@@ -12,25 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);//禁止缩放
     setFixedSize(this->width(), this->height());
 
-    //CCD图像初始话
-    ui->ccd1GrayView->setChart(ccd1Data.chart);
-    ui->ccd1GrayView->setRenderHint(QPainter::Antialiasing);
-    ui->ccd1GrayView->show();
-    ui->ccd1GraphicsView->setScene(ccd1Data.scene);
-    ui->ccd1GraphicsView->show();
-
-    ui->ccd2GrayView->setChart(ccd2Data.chart);
-    ui->ccd2GrayView->setRenderHint(QPainter::Antialiasing);
-    ui->ccd2GrayView->show();
-    ui->ccd2GraphicsView->setScene(ccd2Data.scene);
-    ui->ccd2GraphicsView->show();
-
-    //网页相关
-//    QWebEnginePage *page = new QWebEnginePage(this);
-
-//    QWebChannel *channel = new QWebChannel(this);
-//    channel->registerObject("handledata", &(this->cardata));
-//    page->setWebChannel(channel);
+    this->initChart();
 
 
     //查找可用串口
@@ -96,12 +78,12 @@ void MainWindow::on_blueTooth_clicked()
     if(ui->blueTooth->text()==tr("显示波形"))
     {
         ui->blueTooth->setText(tr("关闭波形"));
-        ui->webView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/line.html"));
+//        ui->webView->load(QUrl("file:///"+qApp->applicationDirPath()+"/html/line.html"));
     }
     else
     {
         ui->blueTooth->setText(tr("显示波形"));
-        ui->webView->load(QUrl());
+//        ui->webView->load(QUrl());
     }
 }
 

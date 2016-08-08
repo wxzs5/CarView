@@ -24,6 +24,8 @@ public:
     ~MainWindow();
 
     void readCCDGrap();
+    void initChart();
+    void showLine(QLineSeries* line, uchar data);
 
 private slots:
     void on_clearButton_clicked();
@@ -50,6 +52,11 @@ private:
     Ui::MainWindow *ui;
     HandleData ccd1Data;
     HandleData ccd2Data;
+    QChart *DataChart;
+    QValueAxis YAxis;
+    QValueAxis XAxis;
+    QLineSeries *Road;
+    uchar LineTemp[128]={0};
 };
 
 #endif // MAINWINDOW_H

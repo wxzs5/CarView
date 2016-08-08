@@ -22,7 +22,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>173</width>
+      <width>171</width>
       <height>901</height>
      </rect>
     </property>
@@ -277,16 +277,6 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWebEngineView" name="webView" native="true">
-    <property name="geometry">
-     <rect>
-      <x>189</x>
-      <y>9</y>
-      <width>1491</width>
-      <height>571</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
@@ -471,7 +461,7 @@
      <rect>
       <x>460</x>
       <y>580</y>
-      <width>91</width>
+      <width>95</width>
       <height>331</height>
      </rect>
     </property>
@@ -570,6 +560,16 @@
      </rect>
     </property>
    </widget>
+   <widget class="QChartView" name="dataView">
+    <property name="geometry">
+     <rect>
+      <x>185</x>
+      <y>11</y>
+      <width>1491</width>
+      <height>561</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -577,7 +577,7 @@
      <x>0</x>
      <y>0</y>
      <width>1684</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -585,11 +585,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QWebEngineView</class>
-   <extends>QWidget</extends>
-   <header location="global">QtWebEngineWidgets/QWebEngineView</header>
-  </customwidget>
   <customwidget>
    <class>QChartView</class>
    <extends>QGraphicsView</extends>
