@@ -27,9 +27,9 @@ void MainWindow::readCCDGrap()
             ui->statusBar->showMessage(tr("CCD Data!"),200);
             while(ii<len)
             {
-                if(ii<len-131)
+                if(ii<len-130)
                 {
-                    if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='z'&&Qt::Checked==ui->ccd1CheckBox->checkState())    //CCD1灰度图
+                    if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='z')    //CCD1灰度图
                     {
                         ii=ii+2;
                         read_len=128;
@@ -42,7 +42,7 @@ void MainWindow::readCCDGrap()
                         if(Qt::Checked==ui->ccd1CheckBox->checkState())
                             ccd1Data.showGray();
                     }
-                    else if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='y'&&Qt::Checked==ui->ccd2CheckBox->checkState())//CCD2灰度图
+                    else if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='y')//CCD2灰度图
                     {
                         ii=ii+2;
                         read_len=128;
@@ -52,6 +52,7 @@ void MainWindow::readCCDGrap()
                             ccd2Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
                             read_len--;
                         }
+                        if(Qt::Checked==ui->ccd2CheckBox->checkState())
                             ccd2Data.showGray();
                     }
                     else
@@ -64,37 +65,33 @@ void MainWindow::readCCDGrap()
                     restData=serialData.mid(ii,len);
                     break;
                 }
-            }
-
+            }  //while()
+            serialData.clear();  //只有解析完才清数据
         }
-        serialData.clear();
     }
     else//解析奔跑数据
     {
         len=serialData.size();
-        if(len>30)
+        for(ii=0;ii<len-6;ii++)
         {
-            for(ii=0;ii<serialData.size();ii++)
+            if((quint8)serialData.at(ii)==0xAA&&(quint8)serialData.at(ii+1)==0xAA)  //数据帧帧头解析成功
             {
-                  if(ii<len-20)
+                ui->statusBar->showMessage(tr("Run Data!"),200);
+                if((quint8)serialData.at(ii+2)==0xEF)     //校验帧
+                {
+                  ReceiveCheck=serialData.at(ii+5);
+                  if(Check==ReceiveCheck)
                   {
-                      if((quint8)serialData.at(ii)==0xAA
-                          &&(quint8)serialData.at(ii+1)==0xAA
-                          &&(quint8)serialData.at(ii+2)==0x02
-                          &&(quint8)serialData.at(ii+3)==18)    //数据帧帧头解析成功
-                      {
-                          ui->statusBar->showMessage(tr("Run Data!"),200);
-                          float mytemp=0;
-                          mytemp=(float)((serialData.at(ii+4)*16+serialData.at(ii+5)));
-                      }
-
+                      ui->statusBar->showMessage("Send Successful!",200);
+                      SendSuccessFlag=1;
                   }
+                }
+                else if((quint8)serialData.at(ii+2)==2)     //常规帧
+                {
+
+//                          mytemp=(float)((serialData.at(ii+4)*16+serialData.at(ii+5)));
+                }
             }
-        }
-        else
-        {
-            restData=serialData.mid(ii,len);
-//            break;
         }
         serialData.clear();
     }

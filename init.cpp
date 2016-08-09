@@ -60,3 +60,16 @@ void  MainWindow::showLine(QLineSeries* line, float data)
 
 }
 
+void MainWindow::CheckSend()
+{
+    if(SendSuccessFlag==1)
+    {
+        SendSuccessFlag=0;
+    }
+    else
+    {
+        ui->statusBar->showMessage("Send Failed",200);
+    }
+    CheckTime.stop();
+}
+

@@ -8,6 +8,7 @@
 #include<QtWebEngineWidgets/QWebEngineView>
 #include<QtWebEngineWidgets/QWebEnginePage>
 #include<QtWebChannel>
+#include<QTimer>
 #include"handledata.h"
 
 
@@ -48,6 +49,10 @@ private slots:
 
     void on_variableButton_clicked();
 
+    void on_PIDSend_clicked();
+
+    void CheckSend();
+
 private:
     Ui::MainWindow *ui;
     HandleData ccd1Data;
@@ -57,7 +62,11 @@ private:
     QValueAxis XAxis;
     QLineSeries *Road;
     uchar LineTemp[128]={0};
-    quint8 Conmand[23]={0xAA,0xAF};
+    QByteArray Conmand;
+    quint8 Check;
+    quint8 ReceiveCheck=0;
+    quint8 SendSuccessFlag=0;
+    QTimer CheckTime;
 };
 
 #endif // MAINWINDOW_H
