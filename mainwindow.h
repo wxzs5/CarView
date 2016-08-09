@@ -25,7 +25,7 @@ public:
 
     void readCCDGrap();
     void initChart();
-    void showLine(QLineSeries* line, uchar data);
+    void showLine(QLineSeries* line, float data);
 
 private slots:
     void on_clearButton_clicked();
@@ -57,6 +57,7 @@ private:
     QValueAxis XAxis;
     QLineSeries *Road;
     uchar LineTemp[128]={0};
+    quint8 Conmand[23]={0xAA,0xAF};
 };
 
 #endif // MAINWINDOW_H

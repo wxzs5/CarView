@@ -32,6 +32,9 @@ void MainWindow::initChart()
     YAxis.setRange(0,300);
     DataChart->setAxisX(&XAxis,Road);
     DataChart->setAxisY(&YAxis,Road);
+//    ui->dataView->setHorizontalScrollBar(ui->dataScrollBar);
+//    ui->dataView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+//    ui->dataScrollBar->setGraphicsEffect();
     ui->dataView->setChart(DataChart);
     ui->dataView->setRenderHint(QPainter::Antialiasing);
     ui->dataView->show();
@@ -43,34 +46,8 @@ void MainWindow::initChart()
 }
 
 
-void  MainWindow::showLine(QLineSeries* line, uchar data)
+void  MainWindow::showLine(QLineSeries* line, float data)
 {
-//    static qreal m_x=5,m_y=1;
-//    qreal x = DataChart->plotArea().width() / XAxis.tickCount();
-//    qreal y = (XAxis.max() - XAxis.min()) / XAxis.tickCount();
-//    m_x += y;
-//    m_y = newdata;
-//    line->append(m_x, m_y);
-//    DataChart->scroll(x, 0);
-
-//    qint64 range = 128;
-//    QVector<QPointF> oldPoints = line->pointsVector();
-//    QVector<QPointF> points;
-//    int resolution = 1;
-
-//    if (oldPoints.count() < range) {
-//        points = line->pointsVector();
-//    } else {
-//        for (int i = range/resolution; i < oldPoints.count(); i++)
-//            points.append(QPointF(i - range/resolution, oldPoints.at(i).y()));
-//    }
-
-//    qint64 size = points.count();
-//    for (int k = 0; k < range/resolution; k++)
-//        points.append(QPointF(k + size, (quint8)data[resolution * k]));
-
-//    line->replace(points);
-
     static qint64 cnt=0;
     qint64 range = 128;
     if(cnt<range)
@@ -78,7 +55,7 @@ void  MainWindow::showLine(QLineSeries* line, uchar data)
     else
     {
         line->append(cnt++,data);
-        DataChart->scroll(1,0);
+        DataChart->scroll(10,0);
     }
 
 }

@@ -11,65 +11,96 @@ void MainWindow::readCCDGrap()
     qint64 len=0,read_len=0;
     static QByteArray serialData,restData;
     QByteArray serialTempData=serial->readAll();
-    showLine(Road,ccd1Data.ccdGray[40]);
-    if(!restData.isEmpty())
+    if(!restData.isEmpty())  //添加补足的帧尾
     {
         serialData.append(restData);
         restData.clear();
     }
     serialData.append(serialTempData);
     serialTempData.clear();
-    if(serialData.size()>260)
+    //如果CCD选钮选择，那么就解析CCD，即和解析奔跑数据互斥
+    if(Qt::Checked==ui->ccd2CheckBox->checkState()||Qt::Checked==ui->ccd1CheckBox->checkState())
     {
-        len=serialData.size();
-        ui->statusBar->showMessage(tr("Received Data!"),200);
-        while(ii<len)
+        if(serialData.size()>260)
         {
-            if(ii<len-131)
+            len=serialData.size();
+            ui->statusBar->showMessage(tr("CCD Data!"),200);
+            while(ii<len)
             {
-
-                if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='z')    //CCD1灰度图
+                if(ii<len-131)
                 {
-                    ii=ii+2;
-                    read_len=128;
-                    cnt=0;
-                    while(read_len>0)
+                    if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='z'&&Qt::Checked==ui->ccd1CheckBox->checkState())    //CCD1灰度图
                     {
-                        ccd1Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
-                        read_len--;
+                        ii=ii+2;
+                        read_len=128;
+                        cnt=0;
+                        while(read_len>0)
+                        {
+                            ccd1Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
+                            read_len--;
+                        }
+                        if(Qt::Checked==ui->ccd1CheckBox->checkState())
+                            ccd1Data.showGray();
                     }
-                    if(Qt::Checked==ui->ccd1CheckBox->checkState())
-                        ccd1Data.showGray();
-                }
-                else if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='y')//CCD2灰度图
-                {
-                    ii=ii+2;
-                    read_len=128;
-                    cnt=0;
-                    while(read_len>0)
+                    else if(serialData.at(ii)=='*'&&serialData.at(ii+1)=='y'&&Qt::Checked==ui->ccd2CheckBox->checkState())//CCD2灰度图
                     {
-                        ccd2Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
-                        read_len--;
+                        ii=ii+2;
+                        read_len=128;
+                        cnt=0;
+                        while(read_len>0)
+                        {
+                            ccd2Data.ccdGray[cnt++]=(uchar)serialData.at(ii++);
+                            read_len--;
+                        }
+                            ccd2Data.showGray();
                     }
-                    if(Qt::Checked==ui->ccd2CheckBox->checkState())
-                        ccd2Data.showGray();
+                    else
+                    {
+                        ii++;
+                    }
                 }
                 else
                 {
-                    ii++;
+                    restData=serialData.mid(ii,len);
+                    break;
                 }
-            }
-
-            else
-            {
-                restData=serialData.mid(ii,len);
-                break;
             }
 
         }
         serialData.clear();
     }
-}
+    else//解析奔跑数据
+    {
+        len=serialData.size();
+        if(len>30)
+        {
+            for(ii=0;ii<serialData.size();ii++)
+            {
+                  if(ii<len-20)
+                  {
+                      if((quint8)serialData.at(ii)==0xAA
+                          &&(quint8)serialData.at(ii+1)==0xAA
+                          &&(quint8)serialData.at(ii+2)==0x02
+                          &&(quint8)serialData.at(ii+3)==18)    //数据帧帧头解析成功
+                      {
+                          ui->statusBar->showMessage(tr("Run Data!"),200);
+                          float mytemp=0;
+                          mytemp=(float)((serialData.at(ii+4)*16+serialData.at(ii+5)));
+                      }
+
+                  }
+            }
+        }
+        else
+        {
+            restData=serialData.mid(ii,len);
+//            break;
+        }
+        serialData.clear();
+    }
+
+
+}//串口解析函数
 
 
 
@@ -125,13 +156,15 @@ void MainWindow::on_openButton_clicked()
         ui->btnFindPort->setEnabled(false);
 
         ui->blueTooth->setEnabled(true);
-        ui->steerSendButton->setEnabled(true);
-        ui->steerGetButton->setEnabled(true);
-        ui->motorGetButton->setEnabled(true);
-        ui->motorSendButton->setEnabled(true);
+        ui->PIDGet->setEnabled(true);
+        ui->PIDSend->setEnabled(true);
         ui->startCarButton->setEnabled(true);
         ui->modelComboBox->setEnabled(true);
 
+        ui->allSend->setEnabled(true);
+        ui->speedSend->setEnabled(true);
+        ui->sendThreshold->setEnabled(true);
+        ui->getInfomation->setEnabled(true);
 
         //判断显示CCD曲线信息
         if(Qt::Checked==ui->ccd1CheckBox->checkState())
@@ -162,12 +195,15 @@ void MainWindow::on_openButton_clicked()
         ui->btnFindPort->setEnabled(true);
 
         ui->blueTooth->setEnabled(false);
-        ui->steerSendButton->setEnabled(false);
-        ui->steerGetButton->setEnabled(false);
-        ui->motorGetButton->setEnabled(false);
-        ui->motorSendButton->setEnabled(false);
+        ui->PIDGet->setEnabled(false);
+        ui->PIDSend->setEnabled(false);
         ui->startCarButton->setEnabled(false);
         ui->modelComboBox->setEnabled(false);
+
+        ui->allSend->setEnabled(false);
+        ui->speedSend->setEnabled(false);
+        ui->sendThreshold->setEnabled(false);
+        ui->getInfomation->setEnabled(false);
     }
 }
 
@@ -188,3 +224,10 @@ void MainWindow::on_btnFindPort_clicked()
            }
        }
 }
+
+
+
+
+
+
+

@@ -347,30 +347,6 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_9">
-       <item>
-        <widget class="QPushButton" name="steerSendButton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>发送</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="steerGetButton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>获取</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_10">
        <item>
         <widget class="QLabel" name="label_11">
@@ -421,28 +397,24 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_12">
-       <item>
-        <widget class="QPushButton" name="motorSendButton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>发送</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="motorGetButton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>获取</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QPushButton" name="PIDGet">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>获取</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="PIDSend">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>发送</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="startCarButton">
@@ -565,10 +537,262 @@
      <rect>
       <x>185</x>
       <y>11</y>
-      <width>1491</width>
+      <width>951</width>
       <height>561</height>
      </rect>
     </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>1149</x>
+      <y>9</y>
+      <width>531</width>
+      <height>551</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="4">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>小S速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>进弯速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QSpinBox" name="CurveSpeed"/>
+     </item>
+     <item row="1" column="3">
+      <widget class="QSpinBox" name="outCurveSpeed"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QSpinBox" name="straightSpeed"/>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLabel" name="label_23">
+       <property name="text">
+        <string>进弯时间</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="4">
+      <widget class="QLabel" name="label_24">
+       <property name="text">
+        <string>小弯速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QSpinBox" name="intoCurveTime"/>
+     </item>
+     <item row="7" column="2">
+      <widget class="QSpinBox" name="CurveThreshold"/>
+     </item>
+     <item row="4" column="4">
+      <widget class="QSpinBox" name="litteCurveSpeed"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLabel" name="label_25">
+       <property name="text">
+        <string>进弯阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>直道阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <widget class="QLabel" name="label_26">
+       <property name="text">
+        <string>弯道阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QSpinBox" name="obstacleSpeed"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QSpinBox" name="rampUpSpeed"/>
+     </item>
+     <item row="5" column="0" colspan="5">
+      <widget class="QPushButton" name="speedSend">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>发送速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QSpinBox" name="obstacleThreshold"/>
+     </item>
+     <item row="9" column="1">
+      <widget class="QSpinBox" name="rampThreshold"/>
+     </item>
+     <item row="9" column="2">
+      <widget class="QSpinBox" name="rampDownThreshold"/>
+     </item>
+     <item row="9" column="3">
+      <widget class="QSpinBox" name="outCurveThreshold_2"/>
+     </item>
+     <item row="9" column="4">
+      <widget class="QSpinBox" name="littleCurveThreshold"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>弯道速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="label_21">
+       <property name="text">
+        <string>上坡速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0" colspan="5">
+      <widget class="QPushButton" name="sendThreshold">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>发送阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>直道速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QSpinBox" name="rampDownSpeed"/>
+     </item>
+     <item row="6" column="3">
+      <widget class="QLabel" name="label_27">
+       <property name="text">
+        <string>出弯阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="4">
+      <widget class="QLabel" name="label_33">
+       <property name="text">
+        <string>小弯阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0" colspan="5">
+      <widget class="QPushButton" name="allSend">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>全部发送</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_20">
+       <property name="text">
+        <string>障碍速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_18">
+       <property name="text">
+        <string>出弯速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QSpinBox" name="straightThreshold"/>
+     </item>
+     <item row="6" column="4">
+      <widget class="QLabel" name="label_28">
+       <property name="text">
+        <string>小S阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QSpinBox" name="intoCurveThreshold"/>
+     </item>
+     <item row="7" column="3">
+      <widget class="QSpinBox" name="outCurveThreshold"/>
+     </item>
+     <item row="7" column="4">
+      <widget class="QSpinBox" name="snakeThreshold"/>
+     </item>
+     <item row="1" column="4">
+      <widget class="QSpinBox" name="snakeSpeed"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_29">
+       <property name="text">
+        <string>障碍阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLabel" name="label_30">
+       <property name="text">
+        <string>上坡阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2">
+      <widget class="QLabel" name="label_31">
+       <property name="text">
+        <string>下坡阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="3">
+      <widget class="QLabel" name="label_32">
+       <property name="text">
+        <string>出弯阈值</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="intoCurveSpeed"/>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLabel" name="label_22">
+       <property name="text">
+        <string>下坡速度</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="5">
+      <widget class="QPushButton" name="getInfomation">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>获取信息</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

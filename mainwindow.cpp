@@ -115,5 +115,5 @@ void MainWindow::on_ccd2CheckBox_clicked()
 
 void MainWindow::on_variableButton_clicked()
 {
-
+    Road->clear();
 }
