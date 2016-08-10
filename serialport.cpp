@@ -117,6 +117,16 @@ void MainWindow::readCCDGrap()
                     ui->diffSpinBox->setValue(tempdata);
                     ui->speedSpinBox->setValue((quint8)serialData.at(ii+14)*256+(quint8)serialData.at(ii+15));
                 }
+                else if((quint8)serialData.at(ii+2)==0x12)     //返回的参数
+                {
+                    ui->straightSpeed->setValue((quint8)serialData.at(ii+4));
+                    ui->CurveSpeed->setValue((quint8)serialData.at(ii+5));
+                    ui->snakeSpeed->setValue((quint8)serialData.at(ii+6));
+                    ui->obstacleSpeed->setValue((quint8)serialData.at(ii+7));
+                    ui->rampUpSpeed->setValue((quint8)serialData.at(ii+8));
+                    ui->rampDownSpeed->setValue((quint8)serialData.at(ii+9));
+                    ui->intoCurveSpeed->setValue((quint8)serialData.at(ii+10));
+                }
                 else if((quint8)serialData.at(ii+2)==2)     //常规帧
                 {
 //                          mytemp=(float)((serialData.at(ii+4)*16+serialData.at(ii+5)));
@@ -136,6 +146,7 @@ void MainWindow::readCCDGrap()
 //打开/关闭串口
 void MainWindow::on_openButton_clicked()
 {
+    ui->startCarButton->setShortcutEnabled(true);
     if(ui->openButton->text()==tr("打开串口"))
     {
         serial = new QSerialPort;
@@ -253,6 +264,8 @@ void MainWindow::on_btnFindPort_clicked()
 
 
 
+
+
 //开车
 void MainWindow::on_startCarButton_clicked()
 {
@@ -345,7 +358,7 @@ void MainWindow::sendSpeed()
     Conmand.clear();
 }
 
-
+//获取PID
 void MainWindow::on_PIDGet_clicked()
 {
     quint8 _cnt = 0;
@@ -353,7 +366,7 @@ void MainWindow::on_PIDGet_clicked()
     Conmand[_cnt++] = 0xAF;   //0xAF
     Conmand[_cnt++] = 1;
     Conmand[_cnt++] = 1;
-    Conmand[_cnt++] = 6;
+    Conmand[_cnt++] = 7;
     Check = 0;
     for (quint8 i = 0; i < _cnt; i++)
         Check += Conmand[i];
@@ -361,9 +374,6 @@ void MainWindow::on_PIDGet_clicked()
     serial->write(Conmand);
     Conmand.clear();
 }
-
-
-
 
 
 
@@ -384,4 +394,45 @@ void MainWindow::CheckSend()
 
 }
 
+//获取速度信息
+void MainWindow::on_getInfomation_clicked()
+{
+    quint8 _cnt = 0;
+    Conmand[_cnt++] = 0xAA;   //0xAA
+    Conmand[_cnt++] = 0xAF;   //0xAF
+    Conmand[_cnt++] = 1;
+    Conmand[_cnt++] = 1;
+    Conmand[_cnt++] = 6;
+    Check = 0;
+    for (quint8 i = 0; i < _cnt; i++)
+        Check += Conmand[i];
+    Conmand[_cnt++] = Check;
+    serial->write(Conmand);
+    Conmand.clear();
+}
+
+
+
+void MainWindow::on_speedSend_clicked()
+{
+    quint8 _cnt = 0;
+    Conmand[_cnt++] = 0xAA;
+    Conmand[_cnt++] = 0xAF;
+    Conmand[_cnt++] = 0x12;
+    Conmand[_cnt++] = 8;
+    Conmand[_cnt++] = (quint8)(ui->straightSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->CurveSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->snakeSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->obstacleSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->rampUpSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->rampDownSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->intoCurveSpeed->value());
+    Conmand[_cnt++] = 0;
+    Check = 0;
+    for (quint8 i = 0; i < _cnt; i++)
+        Check += Conmand[i];
+    Conmand[_cnt++] = Check;
+    serial->write(Conmand);
+    Conmand.clear();
+}
 

@@ -573,13 +573,25 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QSpinBox" name="CurveSpeed"/>
+      <widget class="QSpinBox" name="CurveSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QSpinBox" name="outCurveSpeed"/>
+      <widget class="QSpinBox" name="outCurveSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QSpinBox" name="straightSpeed"/>
+      <widget class="QSpinBox" name="straightSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="3" column="3">
       <widget class="QLabel" name="label_23">
@@ -596,13 +608,21 @@
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QSpinBox" name="intoCurveTime"/>
+      <widget class="QSpinBox" name="intoCurveTime">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="7" column="2">
       <widget class="QSpinBox" name="CurveThreshold"/>
      </item>
      <item row="4" column="4">
-      <widget class="QSpinBox" name="litteCurveSpeed"/>
+      <widget class="QSpinBox" name="litteCurveSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="6" column="1">
       <widget class="QLabel" name="label_25">
@@ -626,10 +646,18 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QSpinBox" name="obstacleSpeed"/>
+      <widget class="QSpinBox" name="obstacleSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QSpinBox" name="rampUpSpeed"/>
+      <widget class="QSpinBox" name="rampUpSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="5" column="0" colspan="5">
       <widget class="QPushButton" name="speedSend">
@@ -688,7 +716,11 @@
       </widget>
      </item>
      <item row="4" column="2">
-      <widget class="QSpinBox" name="rampDownSpeed"/>
+      <widget class="QSpinBox" name="rampDownSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="6" column="3">
       <widget class="QLabel" name="label_27">
@@ -748,7 +780,11 @@
       <widget class="QSpinBox" name="snakeThreshold"/>
      </item>
      <item row="1" column="4">
-      <widget class="QSpinBox" name="snakeSpeed"/>
+      <widget class="QSpinBox" name="snakeSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="8" column="0">
       <widget class="QLabel" name="label_29">
@@ -779,7 +815,11 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QSpinBox" name="intoCurveSpeed"/>
+      <widget class="QSpinBox" name="intoCurveSpeed">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+      </widget>
      </item>
      <item row="3" column="2">
       <widget class="QLabel" name="label_22">

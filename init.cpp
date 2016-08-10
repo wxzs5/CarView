@@ -59,4 +59,13 @@ void  MainWindow::showLine(QLineSeries* line, float data)
 
 
 
+//绑定按键
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key()==Qt::Key_Enter&&ui->openButton->text()==tr("关闭串口"))
+        this->on_startCarButton_clicked();
+}
+
+
+
 

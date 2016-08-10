@@ -29,6 +29,8 @@ public:
     void initChart();
     void showLine(QLineSeries* line, float data);
 
+protected:
+        void keyPressEvent(QKeyEvent *e);
 
 private slots:
     void on_clearButton_clicked();
@@ -58,6 +60,11 @@ private slots:
     void sendSpeed();
 
     void on_PIDGet_clicked();
+
+
+    void on_getInfomation_clicked();
+
+    void on_speedSend_clicked();
 
 private:
     Ui::MainWindow *ui;

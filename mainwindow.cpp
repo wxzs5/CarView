@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->on_btnFindPort_clicked();
     //默认波特率
     ui->BaudBox->setCurrentIndex(6);
+
+    ui->startCarButton->setShortcutAutoRepeat(false);
 }
 
 MainWindow::~MainWindow()
@@ -103,6 +105,9 @@ void MainWindow::on_variableButton_clicked()
 {
     Road->clear();
 }
+
+
+
 
 
 
