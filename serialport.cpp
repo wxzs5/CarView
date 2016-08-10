@@ -72,23 +72,53 @@ void MainWindow::readCCDGrap()
     else//解析奔跑数据
     {
         len=serialData.size();
-        for(ii=0;ii<len-6;ii++)
+        for(ii=0;ii<len-10;ii++)
         {
             if((quint8)serialData.at(ii)==0xAA&&(quint8)serialData.at(ii+1)==0xAA)  //数据帧帧头解析成功
             {
-                ui->statusBar->showMessage(tr("Run Data!"),200);
                 if((quint8)serialData.at(ii+2)==0xEF)     //校验帧
                 {
-                  ReceiveCheck=serialData.at(ii+5);
-                  if(Check==ReceiveCheck)
-                  {
-                      ui->statusBar->showMessage("Send Successful!",200);
-                      SendSuccessFlag=1;
-                  }
+                    CheckHead=serialData.at(ii+4);
+                    ReceiveCheck=serialData.at(ii+5);
+                    qDebug()<<"Check:"<<(quint8)ReceiveCheck;
+                    if(CheckHead==0x11)
+                    {
+                        if(CheckSpeed==ReceiveCheck)
+                        {
+                            ui->statusBar->showMessage("PID Successful!",800);
+                            this->speech.tell("Send Successful!");
+                            SendSuccessFlag=1;
+                        }
+                    }
+                    else if(CheckHead==0x10)
+                    {
+                        if(CheckPID==ReceiveCheck)
+                        {
+                            ui->statusBar->showMessage("Speed Successful!",800);
+                            this->speech.tell("Send Successful!");
+                            SendSuccessFlag=1;
+                            this->sendSpeed();
+                        }
+                    }
+
+                }
+                else if((quint8)serialData.at(ii+2)==0x10)     //返回的参数
+                {
+                    double tempdata;
+                    tempdata=0.001*((quint8)serialData.at(ii+4)*256+(quint8)serialData.at(ii+5));
+                    ui->steerPSpinBox->setValue(tempdata);
+                    tempdata=0.001*((quint8)serialData.at(ii+6)*256+(quint8)serialData.at(ii+7));
+                    ui->steerDSpinBox->setValue(tempdata);
+                    tempdata=0.001*((quint8)serialData.at(ii+8)*256+(quint8)serialData.at(ii+9));
+                    ui->motorPSpinBox->setValue(tempdata);
+                    tempdata=0.001*((quint8)serialData.at(ii+10)*256+(quint8)serialData.at(ii+11));
+                    ui->motorISpinBox->setValue(tempdata);
+                    tempdata=0.0001*((quint8)serialData.at(ii+12)*256+(quint8)serialData.at(ii+13));
+                    ui->diffSpinBox->setValue(tempdata);
+                    ui->speedSpinBox->setValue((quint8)serialData.at(ii+14)*256+(quint8)serialData.at(ii+15));
                 }
                 else if((quint8)serialData.at(ii+2)==2)     //常规帧
                 {
-
 //                          mytemp=(float)((serialData.at(ii+4)*16+serialData.at(ii+5)));
                 }
             }
@@ -137,7 +167,6 @@ void MainWindow::on_openButton_clicked()
         //设置流控制
         serial->setFlowControl(QSerialPort::NoFlowControl);
         //设置串口缓冲区大小
-//        serial->setReadBufferSize(500);
 
 
         //关闭设置菜单使能
@@ -224,7 +253,135 @@ void MainWindow::on_btnFindPort_clicked()
 
 
 
+//开车
+void MainWindow::on_startCarButton_clicked()
+{
+    quint8 _cnt = 0;
+    Conmand[_cnt++] = 0xAA;   //0xAA
+    Conmand[_cnt++] = 0xAF;   //0xAF
+    Conmand[_cnt++] = 1;
+    Conmand[_cnt++] = 1;
+    Conmand[_cnt++] = 2;
+    Check = 0;
+    for (quint8 i = 0; i < _cnt; i++)
+        Check += Conmand[i];
+    Conmand[_cnt++] = Check;
+    serial->write(Conmand);
+    Conmand.clear();
+
+    if(ui->startCarButton->text()==tr("StartCar"))
+        ui->startCarButton->setText(tr("StopCar"));
+    else
+        ui->startCarButton->setText(tr("StartCar"));
+}
 
 
+//发送基本参数
+void MainWindow::on_PIDSend_clicked()
+{
+    quint8 _cnt = 0;
+    quint16 temp;
+    Conmand[_cnt++] = 0xAA;
+    Conmand[_cnt++] = 0xAF;
+    Conmand[_cnt++] = 0x10;
+    Conmand[_cnt++] = 18;
+    temp=(quint16)(ui->steerPSpinBox->value()*1000+30000);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    temp=(quint16)(ui->steerDSpinBox->value()*1000+30000);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    temp=(quint16)(ui->motorPSpinBox->value()*1000+30000);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    temp=(quint16)(ui->motorISpinBox->value()*1000+30000);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    temp=(quint16)(ui->diffSpinBox->value()*10000+30000);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    Check = 0;
+    for (quint8 i = 0; i < _cnt; i++)
+        Check += Conmand[i];
+    Conmand[_cnt++] = Check;
+    serial->write(Conmand);
+    CheckPID=Check;
+    CheckTime.start(400);
+    Conmand.clear();
+}
+
+//发送速度
+void MainWindow::sendSpeed()
+{
+    quint8 _cnt = 0;
+    quint16 temp;
+    Conmand[_cnt++] = 0xAA;
+    Conmand[_cnt++] = 0xAF;
+    Conmand[_cnt++] = 0x11;
+    Conmand[_cnt++] = 8;
+    temp=(quint16)(ui->speedSpinBox->value()+1000);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Check = 0;
+    for (quint8 i = 0; i < _cnt; i++)
+        Check += Conmand[i];
+    Conmand[_cnt++] = Check;
+    serial->write(Conmand);
+    CheckSpeed=Check;
+    Conmand.clear();
+}
+
+
+void MainWindow::on_PIDGet_clicked()
+{
+    quint8 _cnt = 0;
+    Conmand[_cnt++] = 0xAA;   //0xAA
+    Conmand[_cnt++] = 0xAF;   //0xAF
+    Conmand[_cnt++] = 1;
+    Conmand[_cnt++] = 1;
+    Conmand[_cnt++] = 6;
+    Check = 0;
+    for (quint8 i = 0; i < _cnt; i++)
+        Check += Conmand[i];
+    Conmand[_cnt++] = Check;
+    serial->write(Conmand);
+    Conmand.clear();
+}
+
+
+
+
+
+
+void MainWindow::CheckSend()
+{
+    CheckTime.stop();
+    this->sendSpeed();
+    ui->statusBar->showMessage("Send Successful",600);
+    if(SendSuccessFlag==1)
+    {
+        SendSuccessFlag=0;
+    }
+    else
+    {
+//        ui->statusBar->showMessage("Send Failed",800);
+//        this->speech.tell("Send Failed!");
+    }
+
+}
 
 

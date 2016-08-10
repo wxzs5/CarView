@@ -244,6 +244,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="sendButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>发送数据</string>
            </property>
@@ -282,7 +285,7 @@
      <rect>
       <x>190</x>
       <y>580</y>
-      <width>258</width>
+      <width>260</width>
       <height>331</height>
      </rect>
     </property>
@@ -336,11 +339,14 @@
        </item>
        <item>
         <widget class="QDoubleSpinBox" name="diffSpinBox">
+         <property name="decimals">
+          <number>4</number>
+         </property>
          <property name="minimum">
-          <double>-5.000000000000000</double>
+          <double>0.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>5.000000000000000</double>
+          <double>0.020000000000000</double>
          </property>
         </widget>
        </item>

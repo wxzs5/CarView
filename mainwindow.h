@@ -9,6 +9,7 @@
 #include<QtWebEngineWidgets/QWebEnginePage>
 #include<QtWebChannel>
 #include<QTimer>
+#include <QtSpeech>
 #include"handledata.h"
 
 
@@ -27,6 +28,7 @@ public:
     void readCCDGrap();
     void initChart();
     void showLine(QLineSeries* line, float data);
+
 
 private slots:
     void on_clearButton_clicked();
@@ -53,6 +55,10 @@ private slots:
 
     void CheckSend();
 
+    void sendSpeed();
+
+    void on_PIDGet_clicked();
+
 private:
     Ui::MainWindow *ui;
     HandleData ccd1Data;
@@ -64,9 +70,13 @@ private:
     uchar LineTemp[128]={0};
     QByteArray Conmand;
     quint8 Check;
+    quint8 CheckPID;
+    quint8 CheckSpeed;
+    quint8 CheckHead;
     quint8 ReceiveCheck=0;
     quint8 SendSuccessFlag=0;
     QTimer CheckTime;
+    QtSpeech speech;
 };
 
 #endif // MAINWINDOW_H
