@@ -72,7 +72,7 @@ void MainWindow::readCCDGrap()
     else//解析奔跑数据
     {
         len=serialData.size();
-        for(ii=0;ii<len-10;ii++)
+        for(ii=0;ii<len-18;ii++)
         {
             if((quint8)serialData.at(ii)==0xAA&&(quint8)serialData.at(ii+1)==0xAA)  //数据帧帧头解析成功
             {
@@ -80,12 +80,11 @@ void MainWindow::readCCDGrap()
                 {
                     CheckHead=serialData.at(ii+4);
                     ReceiveCheck=serialData.at(ii+5);
-                    qDebug()<<"Check:"<<(quint8)ReceiveCheck;
                     if(CheckHead==0x11)
                     {
                         if(CheckSpeed==ReceiveCheck)
                         {
-                            ui->statusBar->showMessage("PID Successful!",800);
+                            ui->statusBar->showMessage("Speed Successful!",800);
                             this->speech.tell("Send Successful!");
                             SendSuccessFlag=1;
                         }
@@ -94,7 +93,7 @@ void MainWindow::readCCDGrap()
                     {
                         if(CheckPID==ReceiveCheck)
                         {
-                            ui->statusBar->showMessage("Speed Successful!",800);
+                            ui->statusBar->showMessage("PID Successful!",800);
                             this->speech.tell("Send Successful!");
                             SendSuccessFlag=1;
                             this->sendSpeed();
@@ -116,8 +115,11 @@ void MainWindow::readCCDGrap()
                     tempdata=0.0001*((quint8)serialData.at(ii+12)*256+(quint8)serialData.at(ii+13));
                     ui->diffSpinBox->setValue(tempdata);
                     ui->speedSpinBox->setValue((quint8)serialData.at(ii+14)*256+(quint8)serialData.at(ii+15));
+                    tempdata=((quint8)serialData.at(ii+16)*256+(quint8)serialData.at(ii+17));
+                    ui->shiftSpinBox->setValue(tempdata);
+                    ii=ii+17;
                 }
-                else if((quint8)serialData.at(ii+2)==0x12)     //返回的参数
+                else if((quint8)serialData.at(ii+2)==0x12)     //返回的速度值
                 {
                     ui->straightSpeed->setValue((quint8)serialData.at(ii+4));
                     ui->CurveSpeed->setValue((quint8)serialData.at(ii+5));
@@ -126,6 +128,7 @@ void MainWindow::readCCDGrap()
                     ui->rampUpSpeed->setValue((quint8)serialData.at(ii+8));
                     ui->rampDownSpeed->setValue((quint8)serialData.at(ii+9));
                     ui->intoCurveSpeed->setValue((quint8)serialData.at(ii+10));
+                    ii=ii+10;
                 }
                 else if((quint8)serialData.at(ii+2)==2)     //常规帧
                 {
@@ -133,6 +136,7 @@ void MainWindow::readCCDGrap()
                 }
             }
         }
+        restData=serialData.mid(ii,len);
         serialData.clear();
     }
 
@@ -301,8 +305,8 @@ void MainWindow::on_PIDSend_clicked()
     temp=(quint16)(ui->steerPSpinBox->value()*1000+30000);
     Conmand[_cnt++] = (quint8)(temp>>8);
     Conmand[_cnt++] = (quint8)(temp&0xff);
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
     temp=(quint16)(ui->steerDSpinBox->value()*1000+30000);
     Conmand[_cnt++] = (quint8)(temp>>8);
     Conmand[_cnt++] = (quint8)(temp&0xff);
@@ -312,12 +316,12 @@ void MainWindow::on_PIDSend_clicked()
     temp=(quint16)(ui->motorISpinBox->value()*1000+30000);
     Conmand[_cnt++] = (quint8)(temp>>8);
     Conmand[_cnt++] = (quint8)(temp&0xff);
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
     temp=(quint16)(ui->diffSpinBox->value()*10000+30000);
     Conmand[_cnt++] = (quint8)(temp>>8);
     Conmand[_cnt++] = (quint8)(temp&0xff);
@@ -327,8 +331,8 @@ void MainWindow::on_PIDSend_clicked()
     Conmand[_cnt++] = Check;
     serial->write(Conmand);
     CheckPID=Check;
-    CheckTime.start(400);
     Conmand.clear();
+    CheckTime.start(400);
 }
 
 //发送速度
@@ -339,16 +343,27 @@ void MainWindow::sendSpeed()
     Conmand[_cnt++] = 0xAA;
     Conmand[_cnt++] = 0xAF;
     Conmand[_cnt++] = 0x11;
-    Conmand[_cnt++] = 8;
+    Conmand[_cnt++] = 18;
     temp=(quint16)(ui->speedSpinBox->value()+1000);
     Conmand[_cnt++] = (quint8)(temp>>8);
     Conmand[_cnt++] = (quint8)(temp&0xff);
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
-    Conmand[_cnt++] = 0;
+    temp=(quint16)(ui->shiftSpinBox->value()+100);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
+    Conmand[_cnt++] = 255;
     Check = 0;
     for (quint8 i = 0; i < _cnt; i++)
         Check += Conmand[i];
@@ -356,6 +371,7 @@ void MainWindow::sendSpeed()
     serial->write(Conmand);
     CheckSpeed=Check;
     Conmand.clear();
+    CheckTime.start(400);
 }
 
 //获取PID
@@ -380,16 +396,14 @@ void MainWindow::on_PIDGet_clicked()
 void MainWindow::CheckSend()
 {
     CheckTime.stop();
-    this->sendSpeed();
-    ui->statusBar->showMessage("Send Successful",600);
     if(SendSuccessFlag==1)
     {
         SendSuccessFlag=0;
     }
     else
     {
-//        ui->statusBar->showMessage("Send Failed",800);
-//        this->speech.tell("Send Failed!");
+        ui->statusBar->showMessage("Send Failed",800);
+        this->speech.tell("Send Failed!");
     }
 
 }

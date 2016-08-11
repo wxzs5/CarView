@@ -283,9 +283,9 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>189</x>
       <y>580</y>
-      <width>260</width>
+      <width>261</width>
       <height>331</height>
      </rect>
     </property>
@@ -403,24 +403,41 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="PIDGet">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>获取</string>
+      <widget class="QSpinBox" name="shiftSpinBox">
+       <property name="maximum">
+        <number>80</number>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="PIDSend">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>发送</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <item>
+        <widget class="QPushButton" name="PIDGet">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>获取</string>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+G</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="PIDSend">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>发送</string>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+S</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QPushButton" name="startCarButton">
