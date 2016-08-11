@@ -79,6 +79,7 @@ private:
     quint8 Check;
     quint8 CheckPID;
     quint8 CheckSpeed;
+    quint8 CheckParameter;
     quint8 CheckHead;
     quint8 ReceiveCheck=0;
     quint8 SendSuccessFlag=0;

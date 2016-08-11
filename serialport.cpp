@@ -72,7 +72,7 @@ void MainWindow::readCCDGrap()
     else//解析奔跑数据
     {
         len=serialData.size();
-        for(ii=0;ii<len-18;ii++)
+        for(ii=0;ii<len-21;ii++)
         {
             if((quint8)serialData.at(ii)==0xAA&&(quint8)serialData.at(ii+1)==0xAA)  //数据帧帧头解析成功
             {
@@ -99,7 +99,15 @@ void MainWindow::readCCDGrap()
                             this->sendSpeed();
                         }
                     }
-
+                    else if(CheckHead==0x12)
+                    {
+                        if(CheckParameter==ReceiveCheck)
+                        {
+                            ui->statusBar->showMessage("Parameter Successful!",800);
+                            this->speech.tell("Send Successful!");
+                            SendSuccessFlag=1;
+                        }
+                    }
                 }
                 else if((quint8)serialData.at(ii+2)==0x10)     //返回的参数
                 {
@@ -117,7 +125,11 @@ void MainWindow::readCCDGrap()
                     ui->speedSpinBox->setValue((quint8)serialData.at(ii+14)*256+(quint8)serialData.at(ii+15));
                     tempdata=((quint8)serialData.at(ii+16)*256+(quint8)serialData.at(ii+17));
                     ui->shiftSpinBox->setValue(tempdata);
-                    ii=ii+17;
+                    tempdata=((quint8)serialData.at(ii+18)*256+(quint8)serialData.at(ii+19))/100;
+                    ui->timeSpinBox->setValue(tempdata);
+                    tempdata=((quint8)serialData.at(ii+20)*256+(quint8)serialData.at(ii+21))/100;
+                    ui->startLineSpinBox->setValue(tempdata);
+                    ii=ii+21;
                 }
                 else if((quint8)serialData.at(ii+2)==0x12)     //返回的速度值
                 {
@@ -128,7 +140,13 @@ void MainWindow::readCCDGrap()
                     ui->rampUpSpeed->setValue((quint8)serialData.at(ii+8));
                     ui->rampDownSpeed->setValue((quint8)serialData.at(ii+9));
                     ui->intoCurveSpeed->setValue((quint8)serialData.at(ii+10));
-                    ii=ii+10;
+                    ui->intoCurveTime->setValue((quint8)serialData.at(ii+11));
+                    ui->straightThreshold->setValue((quint8)serialData.at(ii+12));
+                    ui->CurveThreshold->setValue((quint8)serialData.at(ii+13));
+                    ui->CurveThresholdUp->setValue((quint8)serialData.at(ii+14));
+                    ui->obstacleThreshold->setValue((quint8)serialData.at(ii+15));
+                    ui->obstacleThresholdUp->setValue((quint8)serialData.at(ii+16));
+                    ii=ii+16;
                 }
                 else if((quint8)serialData.at(ii+2)==2)     //常规帧
                 {
@@ -202,9 +220,7 @@ void MainWindow::on_openButton_clicked()
         ui->startCarButton->setEnabled(true);
         ui->modelComboBox->setEnabled(true);
 
-        ui->allSend->setEnabled(true);
         ui->speedSend->setEnabled(true);
-        ui->sendThreshold->setEnabled(true);
         ui->getInfomation->setEnabled(true);
 
         //判断显示CCD曲线信息
@@ -241,9 +257,7 @@ void MainWindow::on_openButton_clicked()
         ui->startCarButton->setEnabled(false);
         ui->modelComboBox->setEnabled(false);
 
-        ui->allSend->setEnabled(false);
         ui->speedSend->setEnabled(false);
-        ui->sendThreshold->setEnabled(false);
         ui->getInfomation->setEnabled(false);
     }
 }
@@ -350,10 +364,12 @@ void MainWindow::sendSpeed()
     temp=(quint16)(ui->shiftSpinBox->value()+100);
     Conmand[_cnt++] = (quint8)(temp>>8);
     Conmand[_cnt++] = (quint8)(temp&0xff);
-    Conmand[_cnt++] = 255;
-    Conmand[_cnt++] = 255;
-    Conmand[_cnt++] = 255;
-    Conmand[_cnt++] = 255;
+    temp=(quint16)(ui->timeSpinBox->value()*100);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
+    temp=(quint16)(ui->startLineSpinBox->value()*100);
+    Conmand[_cnt++] = (quint8)(temp>>8);
+    Conmand[_cnt++] = (quint8)(temp&0xff);
     Conmand[_cnt++] = 255;
     Conmand[_cnt++] = 255;
     Conmand[_cnt++] = 255;
@@ -382,7 +398,7 @@ void MainWindow::on_PIDGet_clicked()
     Conmand[_cnt++] = 0xAF;   //0xAF
     Conmand[_cnt++] = 1;
     Conmand[_cnt++] = 1;
-    Conmand[_cnt++] = 7;
+    Conmand[_cnt++] = 6;
     Check = 0;
     for (quint8 i = 0; i < _cnt; i++)
         Check += Conmand[i];
@@ -416,7 +432,7 @@ void MainWindow::on_getInfomation_clicked()
     Conmand[_cnt++] = 0xAF;   //0xAF
     Conmand[_cnt++] = 1;
     Conmand[_cnt++] = 1;
-    Conmand[_cnt++] = 6;
+    Conmand[_cnt++] = 7;
     Check = 0;
     for (quint8 i = 0; i < _cnt; i++)
         Check += Conmand[i];
@@ -433,7 +449,7 @@ void MainWindow::on_speedSend_clicked()
     Conmand[_cnt++] = 0xAA;
     Conmand[_cnt++] = 0xAF;
     Conmand[_cnt++] = 0x12;
-    Conmand[_cnt++] = 8;
+    Conmand[_cnt++] = 18;
     Conmand[_cnt++] = (quint8)(ui->straightSpeed->value());
     Conmand[_cnt++] = (quint8)(ui->CurveSpeed->value());
     Conmand[_cnt++] = (quint8)(ui->snakeSpeed->value());
@@ -441,12 +457,24 @@ void MainWindow::on_speedSend_clicked()
     Conmand[_cnt++] = (quint8)(ui->rampUpSpeed->value());
     Conmand[_cnt++] = (quint8)(ui->rampDownSpeed->value());
     Conmand[_cnt++] = (quint8)(ui->intoCurveSpeed->value());
+    Conmand[_cnt++] = (quint8)(ui->intoCurveTime->value());
+    Conmand[_cnt++] = (quint8)(ui->straightThreshold->value());
+    Conmand[_cnt++] = (quint8)(ui->CurveThreshold->value());
+    Conmand[_cnt++] = (quint8)(ui->CurveThresholdUp->value());
+    Conmand[_cnt++] = (quint8)(ui->obstacleThreshold->value());
+    Conmand[_cnt++] = (quint8)(ui->obstacleThresholdUp->value());
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
+    Conmand[_cnt++] = 0;
     Conmand[_cnt++] = 0;
     Check = 0;
     for (quint8 i = 0; i < _cnt; i++)
         Check += Conmand[i];
     Conmand[_cnt++] = Check;
     serial->write(Conmand);
+    CheckParameter=Check;
     Conmand.clear();
+    CheckTime.start(400);
 }
 
