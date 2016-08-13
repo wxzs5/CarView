@@ -282,8 +282,6 @@ void MainWindow::on_btnFindPort_clicked()
 
 
 
-
-
 //开车
 void MainWindow::on_startCarButton_clicked()
 {

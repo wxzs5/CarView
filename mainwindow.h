@@ -10,6 +10,8 @@
 #include<QtWebChannel>
 #include<QTimer>
 #include <QtSpeech>
+#include <QFileDialog>
+#include <QMessageBox>
 #include"handledata.h"
 
 
@@ -51,8 +53,6 @@ private slots:
 
     void on_ccd2CheckBox_clicked();
 
-    void on_variableButton_clicked();
-
     void on_PIDSend_clicked();
 
     void CheckSend();
@@ -65,6 +65,10 @@ private slots:
     void on_getInfomation_clicked();
 
     void on_speedSend_clicked();
+
+    void on_readParameter_clicked();
+
+    void on_saveParameter_clicked();
 
 private:
     Ui::MainWindow *ui;

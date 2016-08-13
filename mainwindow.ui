@@ -343,7 +343,7 @@
           <number>4</number>
          </property>
          <property name="minimum">
-          <double>0.000000000000000</double>
+          <double>-0.020000000000000</double>
          </property>
          <property name="maximum">
           <double>0.020000000000000</double>
@@ -491,22 +491,29 @@
      <rect>
       <x>460</x>
       <y>580</y>
-      <width>95</width>
+      <width>101</width>
       <height>331</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <widget class="QPushButton" name="variableButton">
+      <widget class="QPushButton" name="readRunData">
        <property name="text">
-        <string>变量</string>
+        <string>读取运行数据</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="sdButton">
+      <widget class="QPushButton" name="saveParameter">
        <property name="text">
-        <string>SD</string>
+        <string>保存参数</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="readParameter">
+       <property name="text">
+        <string>读取参数</string>
        </property>
       </widget>
      </item>
